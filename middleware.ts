@@ -7,7 +7,8 @@ export default withAuth({
   callbacks: {
     authorized: ({ token, req }) => {
       if (req.nextUrl.pathname.startsWith("/admin")) {
-        return !!token
+        // Verificar se há token e se tem um id válido
+        return !!(token && (token as any).id)
       }
       return true
     },

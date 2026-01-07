@@ -72,9 +72,9 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      // Se não houver token de usuário, considere não autenticado
+      // Se não houver token de usuário, retornar sessão sem dados
       if (!token || !(token as any).id) {
-        return null
+        return session
       }
 
       // Garantir que o utilizador ainda existe no banco
@@ -88,9 +88,10 @@ export const authOptions: NextAuthOptions = {
         },
       })
 
+      // Se usuário não existe mais, retornar sessão sem dados do usuário
+      // As APIs vão verificar se session.user.id existe e bloquear se necessário
       if (!dbUser) {
-        // Usuário foi removido do banco -> invalidar sessão
-        return null
+        return session
       }
 
       // Preencher a sessão apenas com o que é estritamente necessário no cliente
