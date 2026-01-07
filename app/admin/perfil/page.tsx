@@ -22,16 +22,8 @@ export default function PerfilPage() {
     confirmPassword: "",
   })
 
-  if (status === "loading") {
-    return <LoadingSpinner />
-  }
+  const user = session?.user as any
 
-  if (!session) {
-    return null
-  }
-
-  const user = session.user as any
-  
   useEffect(() => {
     if (user) {
       // Se não houver nome, usar primeira parte do email
@@ -43,6 +35,14 @@ export default function PerfilPage() {
       })
     }
   }, [user])
+
+  if (status === "loading") {
+    return <LoadingSpinner />
+  }
+
+  if (!session) {
+    return null
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

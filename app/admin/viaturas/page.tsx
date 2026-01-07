@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -75,11 +75,7 @@ export default function ViaturasPage() {
   const [filterModelo, setFilterModelo] = useState<string>("all")
   const [filterAno, setFilterAno] = useState<string>("all")
 
-  useEffect(() => {
-    fetchViaturas()
-  }, [])
-
-  const fetchViaturas = async () => {
+  const fetchViaturas = useCallback(async () => {
     try {
       const res = await fetch("/api/viaturas")
       const data = await res.json()
@@ -93,7 +89,11 @@ export default function ViaturasPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
+
+  useEffect(() => {
+    fetchViaturas()
+  }, [fetchViaturas])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

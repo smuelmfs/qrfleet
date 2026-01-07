@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useI18n } from "@/contexts/I18nContext"
 import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
@@ -80,12 +80,7 @@ export default function DocumentosPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<Documento | null>(null)
 
-  useEffect(() => {
-    fetchDocumentos()
-    fetchViaturas()
-  }, [])
-
-  const fetchDocumentos = async () => {
+  const fetchDocumentos = useCallback(async () => {
     try {
       const res = await fetch("/api/documentos")
       const data = await res.json()
@@ -99,9 +94,9 @@ export default function DocumentosPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
-  const fetchViaturas = async () => {
+  const fetchViaturas = useCallback(async () => {
     try {
       const res = await fetch("/api/viaturas")
       const data = await res.json()
@@ -109,7 +104,12 @@ export default function DocumentosPage() {
     } catch (error) {
       console.error("Erro ao carregar viaturas:", error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchDocumentos()
+    fetchViaturas()
+  }, [fetchDocumentos, fetchViaturas])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

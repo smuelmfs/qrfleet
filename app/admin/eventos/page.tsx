@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -75,12 +75,7 @@ export default function EventosPage() {
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [groupByViatura, setGroupByViatura] = useState<boolean>(false)
 
-  useEffect(() => {
-    fetchEventos()
-    fetchViaturas()
-  }, [])
-
-  const fetchEventos = async () => {
+  const fetchEventos = useCallback(async () => {
     try {
       const res = await fetch("/api/eventos")
       const data = await res.json()
@@ -94,9 +89,9 @@ export default function EventosPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
-  const fetchViaturas = async () => {
+  const fetchViaturas = useCallback(async () => {
     try {
       const res = await fetch("/api/viaturas")
       const data = await res.json()
@@ -104,7 +99,12 @@ export default function EventosPage() {
     } catch (error) {
       console.error("Erro ao carregar viaturas:", error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchEventos()
+    fetchViaturas()
+  }, [fetchEventos, fetchViaturas])
 
   const getEventoTipoLabel = (tipo: string) => {
     const labels: Record<string, string> = {

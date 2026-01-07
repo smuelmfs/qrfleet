@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useI18n } from "@/contexts/I18nContext"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { useSession } from "next-auth/react"
@@ -61,11 +61,7 @@ export default function UtilizadoresPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<Utilizador | null>(null)
 
-  useEffect(() => {
-    fetchUtilizadores()
-  }, [])
-
-  const fetchUtilizadores = async () => {
+  const fetchUtilizadores = useCallback(async () => {
     try {
       const res = await fetch("/api/utilizadores")
       if (res.ok) {

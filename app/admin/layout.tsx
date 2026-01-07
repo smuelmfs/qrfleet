@@ -19,6 +19,7 @@ export default function AdminLayout({
   const { data: session, status } = useSession()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { t } = useI18n()
 
   if (status === "loading") {
     return <LoadingSpinner />
@@ -30,7 +31,6 @@ export default function AdminLayout({
   }
 
   const user = session.user as any
-  const { t } = useI18n()
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

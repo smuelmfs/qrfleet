@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,11 +14,7 @@ export default function QRCodePage() {
   const [matricula, setMatricula] = useState<string>("")
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchViatura()
-  }, [params.id])
-
-  const fetchViatura = async () => {
+  const fetchViatura = useCallback(async () => {
     try {
       const res = await fetch(`/api/viaturas/${params.id}`)
       if (res.ok) {
@@ -31,7 +27,11 @@ export default function QRCodePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id])
+
+  useEffect(() => {
+    fetchViatura()
+  }, [fetchViatura])
 
   const handleDownload = () => {
     if (!qrCode) return

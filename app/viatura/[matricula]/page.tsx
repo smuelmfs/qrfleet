@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -51,11 +51,7 @@ export default function ViaturaPublicPage({
   const [showImage, setShowImage] = useState(false)
   const { t } = useI18n()
 
-  useEffect(() => {
-    fetchViatura()
-  }, [params.matricula])
-
-  const fetchViatura = async () => {
+  const fetchViatura = useCallback(async () => {
     try {
       const res = await fetch(`/api/viatura/${params.matricula}`)
       if (res.ok) {
@@ -70,7 +66,11 @@ export default function ViaturaPublicPage({
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.matricula])
+
+  useEffect(() => {
+    fetchViatura()
+  }, [fetchViatura])
 
   const getEventoTipoLabel = (tipo: string) => {
     const labels: Record<string, string> = {
