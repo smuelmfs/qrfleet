@@ -83,7 +83,11 @@ export default function UtilizadoresPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
+
+  useEffect(() => {
+    fetchUtilizadores()
+  }, [fetchUtilizadores])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
