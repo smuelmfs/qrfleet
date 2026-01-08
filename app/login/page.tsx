@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { signIn, getSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
-  const router = useRouter()
   const { toast } = useToast()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -28,22 +26,61 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
+        console.error("Login error:", result.error)
         toast({
           title: "Erro",
-          description: "Email ou senha incorretos",
+          description: result.error === "CredentialsSignin" 
+            ? "Email ou senha incorretos" 
+            : `Erro: ${result.error}`,
           variant: "destructive",
         })
+        setLoading(false)
+        return
+      }
+
+      if (result?.ok) {
+        // Aguardar um pouco para garantir que a sessão foi criada no servidor
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        // Verificar se a sessão foi criada corretamente
+        const session = await getSession()
+        
+        if (session) {
+          // Forçar reload completo da página para garantir que a sessão seja lida corretamente
+          // Isso resolve o problema de a sessão não estar disponível imediatamente após o login
+          window.location.href = "/admin"
+        } else {
+          // Se ainda não houver sessão, tentar novamente após um pequeno delay
+          await new Promise(resolve => setTimeout(resolve, 300))
+          const retrySession = await getSession()
+          
+          if (retrySession) {
+            window.location.href = "/admin"
+          } else {
+            toast({
+              title: "Erro",
+              description: "Sessão não foi criada. Tente novamente.",
+              variant: "destructive",
+            })
+            setLoading(false)
+          }
+        }
       } else {
-        router.push("/admin")
-        router.refresh()
+        console.warn("Login result unexpected:", result)
+        toast({
+          title: "Erro",
+          description: "Resposta inesperada do servidor",
+          variant: "destructive",
+        })
+        setLoading(false)
       }
     } catch (error) {
+      console.error("Login exception:", error)
       toast({
         title: "Erro",
-        description: "Ocorreu um erro ao fazer login",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao fazer login",
         variant: "destructive",
       })
-    } finally {
       setLoading(false)
     }
   }
