@@ -27,12 +27,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     
     // Dashboard
     "dashboard.title": "Dashboard",
-    "dashboard.vehicles": "Viaturas",
+    "dashboard.vehicles": "Equipamentos",
     "dashboard.documents": "Documentos",
     "dashboard.events": "Eventos",
     
     // Navigation
-    "nav.vehicles": "Viaturas",
+    "nav.vehicles": "Equipamentos",
     "nav.documents": "Documentos",
     "nav.events": "Eventos",
     "nav.users": "Utilizadores",
@@ -62,16 +62,16 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.error": "Erro",
     
     // Vehicles
-    "vehicles.title": "Viaturas",
-    "vehicles.new": "Nova Viatura",
-    "vehicles.edit": "Editar Viatura",
+    "vehicles.title": "Equipamentos",
+    "vehicles.new": "Novo Equipamento",
+    "vehicles.edit": "Editar Equipamento",
     "vehicles.license": "Matrícula",
     "vehicles.brand": "Marca",
     "vehicles.model": "Modelo",
     "vehicles.year": "Ano",
-    "vehicles.photo": "Foto da Viatura",
+    "vehicles.photo": "Foto do Equipamento",
     "vehicles.description": "Descrição",
-    "vehicles.noVehicles": "Nenhuma viatura cadastrada",
+    "vehicles.noVehicles": "Nenhum equipamento cadastrado",
     "vehicles.filterByBrand": "Filtrar por Marca",
     "vehicles.filterByModel": "Filtrar por Modelo",
     "vehicles.filterByYear": "Filtrar por Ano",
@@ -94,7 +94,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.title": "Eventos",
     "events.new": "Novo Evento",
     "events.edit": "Editar Evento",
-    "events.vehicle": "Viatura",
+    "events.vehicle": "Equipamento",
     "events.titleField": "Título",
     "events.description": "Descrição",
     "events.type": "Tipo",
@@ -108,7 +108,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.revision": "Revisão",
     "events.other": "Outro",
     "events.showPast": "Mostrar eventos passados",
-    "events.groupByVehicle": "Agrupar por Viatura",
+    "events.groupByVehicle": "Agrupar por Equipamento",
     "events.normalView": "Visualização Normal",
     "events.noEvents": "Nenhum evento registrado",
     "events.history": "Histórico de Manutenção",
@@ -120,7 +120,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.completed": "Realizados",
     
     // Public Vehicle Page
-    "public.vehicleNotFound": "Viatura não encontrada",
+    "public.vehicleNotFound": "Equipamento não encontrado",
     "public.license": "Matrícula",
     "public.year": "Ano",
     "public.documents": "Documentos",
@@ -153,7 +153,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.adminOnly": "Apenas administradores podem acessar esta página.",
     
     // Form labels and messages
-    "form.selectVehicle": "Selecione uma viatura",
+    "form.selectVehicle": "Selecione um equipamento",
     "form.updateInfo": "Atualize as informações",
     "form.fillData": "Preencha os dados",
     "form.maxSize": "Tamanho máximo",
@@ -163,7 +163,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.fileWillReplace": "Este arquivo substituirá o arquivo atual ao salvar",
     "form.clickToSelect": "Clique para selecionar",
     "form.uploading": "Enviando...",
-    "form.allVehicles": "Todas as viaturas",
+    "form.allVehicles": "Todos os equipamentos",
     "form.showing": "Mostrando",
     "form.of": "de",
     "form.document": "documento(s)",
@@ -192,12 +192,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     
     // Dashboard
     "dashboard.title": "Dashboard",
-    "dashboard.vehicles": "Vehicles",
+    "dashboard.vehicles": "Equipment",
     "dashboard.documents": "Documents",
     "dashboard.events": "Events",
     
     // Navigation
-    "nav.vehicles": "Vehicles",
+    "nav.vehicles": "Equipment",
     "nav.documents": "Documents",
     "nav.events": "Events",
     "nav.users": "Users",
@@ -227,16 +227,16 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.error": "Error",
     
     // Vehicles
-    "vehicles.title": "Vehicles",
-    "vehicles.new": "New Vehicle",
-    "vehicles.edit": "Edit Vehicle",
+    "vehicles.title": "Equipment",
+    "vehicles.new": "New Equipment",
+    "vehicles.edit": "Edit Equipment",
     "vehicles.license": "License Plate",
     "vehicles.brand": "Brand",
     "vehicles.model": "Model",
     "vehicles.year": "Year",
-    "vehicles.photo": "Vehicle Photo",
+    "vehicles.photo": "Equipment Photo",
     "vehicles.description": "Description",
-    "vehicles.noVehicles": "No vehicles registered",
+    "vehicles.noVehicles": "No equipment registered",
     "vehicles.filterByBrand": "Filter by Brand",
     "vehicles.filterByModel": "Filter by Model",
     "vehicles.filterByYear": "Filter by Year",
@@ -259,7 +259,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.title": "Events",
     "events.new": "New Event",
     "events.edit": "Edit Event",
-    "events.vehicle": "Vehicle",
+    "events.vehicle": "Equipment",
     "events.titleField": "Title",
     "events.description": "Description",
     "events.type": "Type",
@@ -273,7 +273,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.revision": "Revision",
     "events.other": "Other",
     "events.showPast": "Show past events",
-    "events.groupByVehicle": "Group by Vehicle",
+    "events.groupByVehicle": "Group by Equipment",
     "events.normalView": "Normal View",
     "events.noEvents": "No events registered",
     "events.history": "Maintenance History",
@@ -285,7 +285,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.completed": "Completed",
     
     // Public Vehicle Page
-    "public.vehicleNotFound": "Vehicle not found",
+    "public.vehicleNotFound": "Equipment not found",
     "public.license": "License Plate",
     "public.year": "Year",
     "public.documents": "Documents",
@@ -318,7 +318,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.adminOnly": "Only administrators can access this page.",
     
     // Form labels and messages
-    "form.selectVehicle": "Select a vehicle",
+    "form.selectVehicle": "Select equipment",
     "form.updateInfo": "Update the information",
     "form.fillData": "Fill in the data",
     "form.maxSize": "Maximum size",
@@ -328,7 +328,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.fileWillReplace": "This file will replace the current file when saving",
     "form.clickToSelect": "Click to select",
     "form.uploading": "Uploading...",
-    "form.allVehicles": "All vehicles",
+    "form.allVehicles": "All equipment",
     "form.showing": "Showing",
     "form.of": "of",
     "form.document": "document(s)",
@@ -360,12 +360,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     
     // Dashboard
     "dashboard.title": "Panel de Control",
-    "dashboard.vehicles": "Vehículos",
+    "dashboard.vehicles": "Equipos",
     "dashboard.documents": "Documentos",
     "dashboard.events": "Eventos",
     
     // Navigation
-    "nav.vehicles": "Vehículos",
+    "nav.vehicles": "Equipos",
     "nav.documents": "Documentos",
     "nav.events": "Eventos",
     "nav.users": "Usuarios",
@@ -395,16 +395,16 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.error": "Error",
     
     // Vehicles
-    "vehicles.title": "Vehículos",
-    "vehicles.new": "Nuevo Vehículo",
-    "vehicles.edit": "Editar Vehículo",
+    "vehicles.title": "Equipos",
+    "vehicles.new": "Nuevo Equipo",
+    "vehicles.edit": "Editar Equipo",
     "vehicles.license": "Matrícula",
     "vehicles.brand": "Marca",
     "vehicles.model": "Modelo",
     "vehicles.year": "Año",
-    "vehicles.photo": "Foto del Vehículo",
+    "vehicles.photo": "Foto del Equipo",
     "vehicles.description": "Descripción",
-    "vehicles.noVehicles": "No hay vehículos registrados",
+    "vehicles.noVehicles": "No hay equipos registrados",
     "vehicles.filterByBrand": "Filtrar por Marca",
     "vehicles.filterByModel": "Filtrar por Modelo",
     "vehicles.filterByYear": "Filtrar por Año",
@@ -427,7 +427,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.title": "Eventos",
     "events.new": "Nuevo Evento",
     "events.edit": "Editar Evento",
-    "events.vehicle": "Vehículo",
+    "events.vehicle": "Equipo",
     "events.titleField": "Título",
     "events.description": "Descripción",
     "events.type": "Tipo",
@@ -441,7 +441,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.revision": "Revisión",
     "events.other": "Otro",
     "events.showPast": "Mostrar eventos pasados",
-    "events.groupByVehicle": "Agrupar por Vehículo",
+    "events.groupByVehicle": "Agrupar por Equipo",
     "events.normalView": "Vista Normal",
     "events.noEvents": "No hay eventos registrados",
     "events.history": "Historial de Mantenimiento",
@@ -453,7 +453,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.completed": "Realizados",
     
     // Public Vehicle Page
-    "public.vehicleNotFound": "Vehículo no encontrado",
+    "public.vehicleNotFound": "Equipo no encontrado",
     "public.license": "Matrícula",
     "public.year": "Año",
     "public.documents": "Documentos",
@@ -486,7 +486,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.adminOnly": "Solo los administradores pueden acceder a esta página.",
     
     // Form labels and messages
-    "form.selectVehicle": "Seleccione un vehículo",
+    "form.selectVehicle": "Seleccione un equipo",
     "form.updateInfo": "Actualice la información",
     "form.fillData": "Complete los datos",
     "form.maxSize": "Tamaño máximo",
@@ -496,7 +496,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.fileWillReplace": "Este archivo reemplazará el archivo actual al guardar",
     "form.clickToSelect": "Haga clic para seleccionar",
     "form.uploading": "Enviando...",
-    "form.allVehicles": "Todos los vehículos",
+    "form.allVehicles": "Todos los equipos",
     "form.showing": "Mostrando",
     "form.of": "de",
     "form.document": "documento(s)",
@@ -528,12 +528,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     
     // Dashboard
     "dashboard.title": "Tableau de Bord",
-    "dashboard.vehicles": "Véhicules",
+    "dashboard.vehicles": "Équipements",
     "dashboard.documents": "Documents",
     "dashboard.events": "Événements",
     
     // Navigation
-    "nav.vehicles": "Véhicules",
+    "nav.vehicles": "Équipements",
     "nav.documents": "Documents",
     "nav.events": "Événements",
     "nav.users": "Utilisateurs",
@@ -563,16 +563,16 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.error": "Erreur",
     
     // Vehicles
-    "vehicles.title": "Véhicules",
-    "vehicles.new": "Nouveau Véhicule",
-    "vehicles.edit": "Modifier le Véhicule",
+    "vehicles.title": "Équipements",
+    "vehicles.new": "Nouvel Équipement",
+    "vehicles.edit": "Modifier l'Équipement",
     "vehicles.license": "Plaque d'immatriculation",
     "vehicles.brand": "Marque",
     "vehicles.model": "Modèle",
     "vehicles.year": "Année",
-    "vehicles.photo": "Photo du Véhicule",
+    "vehicles.photo": "Photo de l'Équipement",
     "vehicles.description": "Description",
-    "vehicles.noVehicles": "Aucun véhicule enregistré",
+    "vehicles.noVehicles": "Aucun équipement enregistré",
     "vehicles.filterByBrand": "Filtrer par Marque",
     "vehicles.filterByModel": "Filtrer par Modèle",
     "vehicles.filterByYear": "Filtrer par Année",
@@ -595,7 +595,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.title": "Événements",
     "events.new": "Nouvel Événement",
     "events.edit": "Modifier l'Événement",
-    "events.vehicle": "Véhicule",
+    "events.vehicle": "Équipement",
     "events.titleField": "Titre",
     "events.description": "Description",
     "events.type": "Type",
@@ -609,7 +609,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.revision": "Révision",
     "events.other": "Autre",
     "events.showPast": "Afficher les événements passés",
-    "events.groupByVehicle": "Grouper par Véhicule",
+    "events.groupByVehicle": "Grouper par Équipement",
     "events.normalView": "Vue Normale",
     "events.noEvents": "Aucun événement enregistré",
     "events.history": "Historique de Maintenance",
@@ -621,7 +621,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.completed": "Réalisés",
     
     // Public Vehicle Page
-    "public.vehicleNotFound": "Véhicule non trouvé",
+    "public.vehicleNotFound": "Équipement non trouvé",
     "public.license": "Plaque d'immatriculation",
     "public.year": "Année",
     "public.documents": "Documents",
@@ -654,7 +654,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.adminOnly": "Seuls les administrateurs peuvent accéder à cette page.",
     
     // Form labels and messages
-    "form.selectVehicle": "Sélectionnez un véhicule",
+    "form.selectVehicle": "Sélectionnez un équipement",
     "form.updateInfo": "Mettez à jour les informations",
     "form.fillData": "Remplissez les données",
     "form.maxSize": "Taille maximale",
@@ -664,7 +664,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.fileWillReplace": "Ce fichier remplacera le fichier actuel lors de l'enregistrement",
     "form.clickToSelect": "Cliquez pour sélectionner",
     "form.uploading": "Envoi en cours...",
-    "form.allVehicles": "Tous les véhicules",
+    "form.allVehicles": "Tous les équipements",
     "form.showing": "Affichage",
     "form.of": "de",
     "form.document": "document(s)",

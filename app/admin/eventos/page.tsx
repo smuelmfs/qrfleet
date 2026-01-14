@@ -97,7 +97,7 @@ export default function EventosPage() {
       const data = await res.json()
       setViaturas(data)
     } catch (error) {
-      console.error("Erro ao carregar viaturas:", error)
+      console.error("Erro ao carregar equipamentos:", error)
     }
   }, [])
 
@@ -447,7 +447,7 @@ export default function EventosPage() {
             <div className="relative">
               <Input
                 id="search"
-                placeholder="Buscar por título, tipo, viatura..."
+                placeholder="Buscar por título, tipo, equipamento..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -468,14 +468,14 @@ export default function EventosPage() {
           <div className="space-y-2">
             <Label htmlFor="filter-viatura" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              Filtrar por Viatura
+              Filtrar por Equipamento
             </Label>
             <Select value={filterViatura} onValueChange={setFilterViatura}>
               <SelectTrigger id="filter-viatura">
-                <SelectValue placeholder="Todas as viaturas" />
+                <SelectValue placeholder="Todos os equipamentos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas as viaturas</SelectItem>
+                <SelectItem value="all">Todos os equipamentos</SelectItem>
                 {viaturas.map((viatura) => (
                   <SelectItem key={viatura.id} value={viatura.id}>
                     {viatura.matricula} - {viatura.modelo}

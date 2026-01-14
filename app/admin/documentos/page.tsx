@@ -102,7 +102,7 @@ export default function DocumentosPage() {
       const data = await res.json()
       setViaturas(data)
     } catch (error) {
-      console.error("Erro ao carregar viaturas:", error)
+      console.error("Erro ao carregar equipamentos:", error)
     }
   }, [])
 
@@ -153,7 +153,7 @@ export default function DocumentosPage() {
     if (!formData.viaturaId) {
       toast({
         title: "Erro",
-        description: "Selecione uma viatura",
+        description: "Selecione um equipamento",
         variant: "destructive",
       })
       return
@@ -327,7 +327,7 @@ export default function DocumentosPage() {
         const key = doc.viaturaId || "sem-viatura"
         if (!acc[key]) {
           acc[key] = {
-            viatura: doc.viatura || { matricula: "Sem viatura", modelo: "" },
+            viatura: doc.viatura || { matricula: "Sem equipamento", modelo: "" },
             documentos: [],
           }
         }
@@ -591,7 +591,7 @@ export default function DocumentosPage() {
             <div className="relative">
               <Input
                 id="search"
-                placeholder="Buscar por título, tipo, viatura..."
+                placeholder="Buscar por título, tipo, equipamento..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"

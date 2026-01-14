@@ -83,7 +83,7 @@ export default function ViaturasPage() {
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Erro ao carregar viaturas",
+        description: "Erro ao carregar equipamentos",
         variant: "destructive",
       })
     } finally {
@@ -171,8 +171,8 @@ export default function ViaturasPage() {
         toast({
           title: "Sucesso",
           description: editing
-            ? "Viatura atualizada com sucesso"
-            : "Viatura criada com sucesso",
+            ? "Equipamento atualizado com sucesso"
+            : "Equipamento criado com sucesso",
         })
         setOpen(false)
         setEditing(null)
@@ -225,20 +225,20 @@ export default function ViaturasPage() {
       if (res.ok) {
         toast({
           title: "Sucesso",
-          description: "Viatura deletada com sucesso",
+          description: "Equipamento deletado com sucesso",
         })
         fetchViaturas()
       } else {
         toast({
           title: "Erro",
-          description: "Erro ao deletar viatura",
+          description: "Erro ao deletar equipamento",
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Erro ao deletar viatura",
+        description: "Erro ao deletar equipamento",
         variant: "destructive",
       })
     }
@@ -248,7 +248,7 @@ export default function ViaturasPage() {
     if (!viatura.qrCode) {
       toast({
         title: "Erro",
-        description: "QR Code não disponível para esta viatura",
+        description: "QR Code não disponível para este equipamento",
         variant: "destructive",
       })
       return
@@ -273,18 +273,18 @@ export default function ViaturasPage() {
       // Título
       pdf.setFontSize(20)
       pdf.setFont("helvetica", "bold")
-      pdf.text("QR Code da Viatura", pageWidth / 2, margin + 15, {
+      pdf.text("QR Code do Equipamento", pageWidth / 2, margin + 15, {
         align: "center",
       })
 
       // Adicionar QR Code
       pdf.addImage(viatura.qrCode, "PNG", qrX, qrY, qrSize, qrSize)
 
-      // Informações da viatura
+      // Informações do equipamento
       const infoY = qrY + qrSize + 20
       pdf.setFontSize(14)
       pdf.setFont("helvetica", "bold")
-      pdf.text("Informações da Viatura", pageWidth / 2, infoY, {
+      pdf.text("Informações do Equipamento", pageWidth / 2, infoY, {
         align: "center",
       })
 
@@ -314,7 +314,7 @@ export default function ViaturasPage() {
       pdf.setFontSize(10)
       pdf.setFont("helvetica", "italic")
       pdf.text(
-        "Escaneie o QR Code para acessar as informações da viatura",
+        "Escaneie o QR Code para acessar as informações do equipamento",
         pageWidth / 2,
         instructionsY,
         { align: "center" }
@@ -609,10 +609,10 @@ export default function ViaturasPage() {
       </div>
 
       {/* Mobile Cards View */}
-      <div className="block sm:hidden space-y-4">
+  <div className="block sm:hidden space-y-4">
         {filteredViaturas.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
-            {viaturas.length === 0 ? t("vehicles.noVehicles") : "Nenhuma viatura encontrada com os filtros aplicados"}
+            {viaturas.length === 0 ? t("vehicles.noVehicles") : "Nenhum equipamento encontrado com os filtros aplicados"}
           </div>
         ) : (
           filteredViaturas.map((viatura) => (
@@ -687,7 +687,7 @@ export default function ViaturasPage() {
             {filteredViaturas.length === 0 ? (
               <TableRow className="dark:border-gray-700">
                 <TableCell colSpan={5} className="text-center dark:text-gray-400">
-                  {viaturas.length === 0 ? t("vehicles.noVehicles") : "Nenhuma viatura encontrada com os filtros aplicados"}
+                  {viaturas.length === 0 ? t("vehicles.noVehicles") : "Nenhum equipamento encontrado com os filtros aplicados"}
                 </TableCell>
               </TableRow>
             ) : (
