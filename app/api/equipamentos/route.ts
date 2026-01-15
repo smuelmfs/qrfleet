@@ -94,10 +94,10 @@ export async function POST(request: NextRequest) {
 
     let qrCodeDataUrl: string | null = null
     if (tipo === "VEICULO" && matricula) {
-      const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${matricula}`
+      const publicUrl = `${process.env.NEXTAUTH_URL}/equipament-view/${matricula}`
       qrCodeDataUrl = await generateQRCode(publicUrl)
     } else if (tipo === "MAQUINA" && parque) {
-      const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${parque}`
+      const publicUrl = `${process.env.NEXTAUTH_URL}/equipament-view/${parque}`
       qrCodeDataUrl = await generateQRCode(publicUrl)
     }
 

@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
           continue
         }
 
-        const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${item.parque}`
+        const publicUrl = `${process.env.NEXTAUTH_URL}/equipament-view/${item.parque}`
         const qrCodeDataUrl = await generateQRCode(publicUrl)
 
         const equipamento = await prisma.equipamento.create({
