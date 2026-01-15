@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { useI18n } from "@/contexts/I18nContext"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { Pagination } from "@/components/ui/pagination"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -59,6 +60,8 @@ export default function DocumentosPage() {
   const [filterEquipamento, setFilterEquipamento] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [groupByEquipamento, setGroupByEquipamento] = useState<boolean>(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const fetchDocumentos = useCallback(async () => {
     try {
@@ -122,6 +125,15 @@ export default function DocumentosPage() {
         return acc
       }, {} as Record<string, { equipamento: { tipo: string; matricula?: string; parque?: string; modelo: string }; documentos: Documento[] }>)
     : null
+
+  const totalPages = Math.ceil(filteredDocumentos.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedDocumentos = filteredDocumentos.slice(startIndex, endIndex)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, filterEquipamento])
 
   if (loading) return <LoadingSpinner />
 
@@ -252,7 +264,7 @@ export default function DocumentosPage() {
             </div>
           ))
         ) : (
-          filteredDocumentos.map((documento) => (
+          paginatedDocumentos.map((documento) => (
             <div key={documento.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
               <div className="mb-3">
                 <h3 className="font-semibold text-lg dark:text-white">{documento.titulo}</h3>
@@ -363,7 +375,7 @@ export default function DocumentosPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredDocumentos.map((documento) => (
+                  paginatedDocumentos.map((documento) => (
                     <TableRow key={documento.id} className="dark:border-gray-700">
                       <TableCell className="dark:text-gray-300">{documento.titulo}</TableCell>
                       <TableCell className="dark:text-gray-300">
@@ -401,6 +413,18 @@ export default function DocumentosPage() {
           </div>
         )}
       </div>
+
+      {filteredDocumentos.length > 0 && totalPages > 1 && (
+        <div className="mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredDocumentos.length}
+          />
+        </div>
+      )}
 
     </div>
   )

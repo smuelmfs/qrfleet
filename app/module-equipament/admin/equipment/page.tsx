@@ -35,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Pagination } from "@/components/ui/pagination"
 
 interface Equipamento {
   id: string
@@ -83,6 +84,8 @@ export default function EquipamentosPage() {
   const [filterMarca, setFilterMarca] = useState<string>("all")
   const [filterModelo, setFilterModelo] = useState<string>("all")
   const [filterAno, setFilterAno] = useState<string>("all")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const fetchEquipamentos = useCallback(async () => {
     try {
@@ -396,6 +399,15 @@ export default function EquipamentosPage() {
   const modelos = Array.isArray(equipamentos) ? Array.from(new Set(equipamentos.map((e) => e.modelo))).sort() : []
   const anos = Array.isArray(equipamentos) ? Array.from(new Set(equipamentos.map((e) => e.ano))).sort((a, b) => b - a) : []
 
+  const totalPages = Math.ceil(filteredEquipamentos.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedEquipamentos = filteredEquipamentos.slice(startIndex, endIndex)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, filterTipo, filterMarca, filterModelo, filterAno])
+
   if (loading) return <LoadingSpinner />
 
   return (
@@ -557,7 +569,7 @@ export default function EquipamentosPage() {
             {Array.isArray(equipamentos) && equipamentos.length === 0 ? t("vehicles.noVehicles") : t("common.noResults")}
           </div>
         ) : (
-          filteredEquipamentos.map((equipamento) => (
+          paginatedEquipamentos.map((equipamento) => (
             <div key={equipamento.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
               <div className="flex gap-4 mb-3">
                 {equipamento.foto ? (
@@ -648,6 +660,18 @@ export default function EquipamentosPage() {
         )}
       </div>
 
+      {filteredEquipamentos.length > 0 && totalPages > 1 && (
+        <div className="mt-4 block sm:hidden">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredEquipamentos.length}
+          />
+        </div>
+      )}
+
       {}
       <div className="hidden sm:block bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
         <Table>
@@ -670,7 +694,7 @@ export default function EquipamentosPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredEquipamentos.map((equipamento) => (
+              paginatedEquipamentos.map((equipamento) => (
                 <TableRow key={equipamento.id} className="dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -763,6 +787,18 @@ export default function EquipamentosPage() {
           </TableBody>
         </Table>
       </div>
+
+      {filteredEquipamentos.length > 0 && totalPages > 1 && (
+        <div className="mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredEquipamentos.length}
+          />
+        </div>
+      )}
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}

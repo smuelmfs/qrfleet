@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2 } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, FileSpreadsheet } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/contexts/I18nContext"
 
@@ -28,6 +28,8 @@ export default function NovoEquipamentoPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string>("")
   const [isDragging, setIsDragging] = useState(false)
+  const [importingExcel, setImportingExcel] = useState(false)
+  const [excelFile, setExcelFile] = useState<File | null>(null)
 
   const [formData, setFormData] = useState({
     tipo: "VEICULO",
@@ -334,6 +336,143 @@ export default function NovoEquipamentoPage() {
                     </div>
                   ) : (
                     <>
+                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded-r-lg mb-4">
+                        <p className="text-sm text-yellow-700 dark:text-yellow-300 font-medium mb-2">
+                          {t("equipment.excel.import.title")}
+                        </p>
+                        <p className="text-xs text-yellow-600 dark:text-yellow-400 mb-3">
+                          {t("equipment.excel.import.description")}
+                        </p>
+                        <div className="flex gap-2">
+                          <Input
+                            id="excel-file"
+                            type="file"
+                            accept=".xlsx,.xls"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (file) {
+                                setExcelFile(file)
+                              }
+                            }}
+                            className="hidden"
+                          />
+                          <Label
+                            htmlFor="excel-file"
+                            className="cursor-pointer inline-flex items-center px-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm"
+                          >
+                            <FileSpreadsheet className="mr-2 h-4 w-4" />
+                            {t("equipment.excel.import.select")}
+                          </Label>
+                          {excelFile && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={async () => {
+                                if (!excelFile) return
+                                setImportingExcel(true)
+                                try {
+                                  const formDataExcel = new FormData()
+                                  formDataExcel.append("file", excelFile)
+
+                                  const res = await fetch("/api/equipamentos/import-excel", {
+                                    method: "POST",
+                                    body: formDataExcel,
+                                  })
+
+                                  const result = await res.json()
+
+                                  if (!res.ok) {
+                                    toast({
+                                      title: t("common.error"),
+                                      description: result.error || t("equipment.excel.import.error"),
+                                      variant: "destructive",
+                                    })
+                                    setImportingExcel(false)
+                                    return
+                                  }
+
+                                  if (result.created && result.created > 0) {
+                                    const successMessage = t("equipment.excel.import.created")
+                                      .replace("{created}", String(result.created))
+                                      .replace("{total}", String(result.total))
+                                    
+                                    toast({
+                                      title: t("common.success"),
+                                      description: successMessage,
+                                    })
+                                    
+                                    setTimeout(() => {
+                                      router.push("/module-equipament/admin/equipment")
+                                    }, 2000)
+                                  } else if (result.data && result.data.length > 0) {
+                                    const firstItem = result.data[0]
+                                    setFormData({
+                                      ...formData,
+                                      parque: firstItem.parque || "",
+                                      marca: firstItem.marca || "",
+                                      modelo: firstItem.modelo || "",
+                                      peso: firstItem.peso || "",
+                                      ano: String(firstItem.ano) || "",
+                                    })
+                                    toast({
+                                      title: t("common.success"),
+                                      description: t("equipment.excel.import.success").replace("{count}", String(result.total)),
+                                    })
+                                  }
+
+                                  if (result.errors && result.errors.length > 0) {
+                                    const errorMessage = result.errors.length > 5
+                                      ? `${result.errors.length} ${t("equipment.excel.import.errors")}. ${t("equipment.excel.import.firstErrors")}: ${result.errors.slice(0, 3).join("; ")}`
+                                      : `${result.errors.length} ${t("equipment.excel.import.errors")}: ${result.errors.join("; ")}`
+                                    
+                                    toast({
+                                      title: t("common.warning"),
+                                      description: errorMessage,
+                                      variant: "default",
+                                    })
+                                  }
+
+                                  if (result.creationErrors && result.creationErrors.length > 0) {
+                                    const errorMessage = result.creationErrors.length > 5
+                                      ? `${result.creationErrors.length} ${t("equipment.excel.import.creationErrors")}. ${t("equipment.excel.import.firstErrors")}: ${result.creationErrors.slice(0, 3).join("; ")}`
+                                      : `${result.creationErrors.length} ${t("equipment.excel.import.creationErrors")}: ${result.creationErrors.join("; ")}`
+                                    
+                                    toast({
+                                      title: t("common.warning"),
+                                      description: errorMessage,
+                                      variant: "default",
+                                    })
+                                  }
+                                } catch (error) {
+                                  toast({
+                                    title: t("common.error"),
+                                    description: t("equipment.excel.import.error"),
+                                    variant: "destructive",
+                                  })
+                                } finally {
+                                  setImportingExcel(false)
+                                }
+                              }}
+                              disabled={importingExcel}
+                            >
+                              {importingExcel ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {t("equipment.excel.import.processing")}
+                                </>
+                              ) : (
+                                t("equipment.excel.import.load")
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                        {excelFile && (
+                          <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2">
+                            {t("equipment.excel.import.selected")}: {excelFile.name}
+                          </p>
+                        )}
+                      </div>
                       <div className="grid gap-2">
                         <Label htmlFor="parque">{t("equipment.park")} *</Label>
                         <Input
