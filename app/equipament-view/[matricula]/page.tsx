@@ -125,7 +125,7 @@ export default function EquipamentoPublicPage({
       <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold dark:text-white">QRFleet</h2>
+            <h2 className="text-lg font-semibold dark:text-white">WibiX</h2>
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <LanguageToggle />

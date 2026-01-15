@@ -84,7 +84,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-8">
       <Card className="w-full max-w-md dark:bg-gray-800">
         <CardHeader>
-          <CardTitle className="text-2xl dark:text-white">QRFleet - Login</CardTitle>
+          <CardTitle className="text-2xl dark:text-white">WibiX - Login</CardTitle>
           <CardDescription className="dark:text-gray-400">
             Entre com suas credenciais para acessar o sistema
           </CardDescription>

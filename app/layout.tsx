@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "QRFleet - Gestão de Frotas",
-  description: "Sistema de gestão de frotas com QR Codes",
+  title: "WibiX - Gestão de Frotas",
+  description: "WibiX - Sistema de gestão de frotas com QR Codes",
 }
 
 export default function RootLayout({

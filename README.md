@@ -1,4 +1,4 @@
-# QRFleet
+# WibiX
 
 Sistema completo de gestão de frotas e equipamentos com QR Codes para acesso público às informações. Suporta veículos e máquinas com funcionalidades avançadas de importação, auditoria e multi-idioma.
 
@@ -34,7 +34,7 @@ Crie um arquivo `.env` na raiz do projeto:
 
 ```env
 # Database (MySQL Local - XAMPP)
-DATABASE_URL="mysql://root:@localhost:3306/qrfleet"
+DATABASE_URL="mysql://root:@localhost:3306/wibix"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
@@ -56,7 +56,7 @@ NEXTAUTH_SECRET="gere-um-secret-aleatorio-aqui-com-openssl-rand-base64-32"
 #### Criar o banco de dados no MySQL:
 
 ```sql
-CREATE DATABASE qrfleet;
+CREATE DATABASE wibix;
 ```
 
 Ou use o phpMyAdmin para criar o banco.
@@ -83,7 +83,7 @@ npm run db:seed
 ```
 
 **Credenciais padrão:**
-- Email: `admin@qrfleet.com`
+- Email: `admin@wibix.com`
 - Senha: `admin123`
 
 ⚠️ **IMPORTANTE:** Altere a senha após o primeiro login!
@@ -99,7 +99,7 @@ O sistema estará disponível em: `http://localhost:3000`
 ## 📁 Estrutura do Projeto
 
 ```
-QRFleet/
+WibiX/
 ├── app/
 │   ├── module-equipament/
 │   │   └── admin/              # Área administrativa
@@ -368,7 +368,7 @@ npm run dev
 1. Acesse `http://localhost:3000`
 2. Você será redirecionado para `/login`
 3. Use as credenciais:
-   - Email: `admin@qrfleet.com`
+   - Email: `admin@wibix.com`
    - Senha: `admin123`
 
 ### 3. Criar um Equipamento

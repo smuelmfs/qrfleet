@@ -43,7 +43,7 @@ export default function AdminLayout({
                   {t("nav.backToModules")}
                 </Link>
                 <Link href="/module-equipament/admin" className="text-xl font-bold dark:text-white">
-                  QRFleet
+                  WibiX
                 </Link>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
