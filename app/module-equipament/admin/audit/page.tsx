@@ -15,6 +15,7 @@ import {
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { format } from "date-fns"
 import { FileText, Calendar, User, Settings, Trash2, Plus, Edit, LogIn, LogOut } from "lucide-react"
+import { useI18n } from "@/contexts/I18nContext"
 
 interface AuditoriaItem {
   id: string
@@ -35,6 +36,7 @@ interface AuditoriaItem {
 export default function AuditoriaPage() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { t } = useI18n()
   const [auditoria, setAuditoria] = useState<AuditoriaItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -82,23 +84,107 @@ export default function AuditoriaPage() {
 
   const getAcaoLabel = (acao: string) => {
     const labels: Record<string, string> = {
-      CREATE: "Criar",
-      UPDATE: "Atualizar",
-      DELETE: "Deletar",
-      LOGIN: "Login",
-      LOGOUT: "Logout",
+      CREATE: t("audit.actions.create"),
+      UPDATE: t("audit.actions.update"),
+      DELETE: t("audit.actions.delete"),
+      LOGIN: t("audit.actions.login"),
+      LOGOUT: t("audit.actions.logout"),
     }
     return labels[acao] || acao
   }
 
   const getEntidadeLabel = (entidade: string) => {
     const labels: Record<string, string> = {
-      VIATURA: "Equipamento",
-      DOCUMENTO: "Documento",
-      EVENTO: "Evento",
-      USUARIO: "Usuário",
+      VIATURA: t("audit.entities.equipment"),
+      EQUIPAMENTO: t("audit.entities.equipment"),
+      DOCUMENTO: t("audit.entities.document"),
+      EVENTO: t("audit.entities.event"),
+      USUARIO: t("audit.entities.user"),
     }
     return labels[entidade] || entidade
+  }
+
+  const getTranslatedDetails = (detalhes: string | null | undefined, acao: string, entidade: string): string => {
+    if (!detalhes) return "-"
+
+    const patterns: Record<string, { pattern: RegExp; key: string }> = {
+      "EQUIPAMENTO_CREATE": {
+        pattern: /^Equipamento criado: (.+)$/,
+        key: "audit.details.equipmentCreated"
+      },
+      "EQUIPAMENTO_UPDATE": {
+        pattern: /^Equipamento atualizado: (.+)$/,
+        key: "audit.details.equipmentUpdated"
+      },
+      "EQUIPAMENTO_DELETE": {
+        pattern: /^Equipamento deletado: (.+)$/,
+        key: "audit.details.equipmentDeleted"
+      },
+      "EQUIPAMENTO_VISIBILITY": {
+        pattern: /^Visibilidade pública atualizada$/,
+        key: "audit.details.visibilityUpdated"
+      },
+      "DOCUMENTO_CREATE": {
+        pattern: /^Documento criado: (.+)$/,
+        key: "audit.details.documentCreated"
+      },
+      "DOCUMENTO_UPDATE": {
+        pattern: /^Documento atualizado: (.+)$/,
+        key: "audit.details.documentUpdated"
+      },
+      "DOCUMENTO_DELETE": {
+        pattern: /^Documento deletado: (.+)$/,
+        key: "audit.details.documentDeleted"
+      },
+      "EVENTO_CREATE": {
+        pattern: /^Evento criado: (.+)$/,
+        key: "audit.details.eventCreated"
+      },
+      "EVENTO_UPDATE": {
+        pattern: /^Evento atualizado: (.+)$/,
+        key: "audit.details.eventUpdated"
+      },
+      "EVENTO_DELETE": {
+        pattern: /^Evento deletado: (.+)$/,
+        key: "audit.details.eventDeleted"
+      },
+      "USUARIO_CREATE": {
+        pattern: /^Usuário criado: (.+)$/,
+        key: "audit.details.userCreated"
+      },
+      "USUARIO_UPDATE": {
+        pattern: /^Usuário atualizado: (.+)$/,
+        key: "audit.details.userUpdated"
+      },
+      "USUARIO_DELETE": {
+        pattern: /^Usuário deletado: (.+)$/,
+        key: "audit.details.userDeleted"
+      },
+      "USUARIO_LOGIN": {
+        pattern: /^Login realizado: (.+)$/,
+        key: "audit.details.login"
+      },
+    }
+
+    if (detalhes === "Visibilidade pública atualizada") {
+      return t("audit.details.visibilityUpdated")
+    }
+
+    const key = `${entidade}_${acao}`
+    const config = patterns[key]
+
+    if (config) {
+      const match = detalhes.match(config.pattern)
+      if (match) {
+        if (match[1]) {
+          return t(config.key).replace("{details}", match[1])
+        } else {
+          return t(config.key)
+        }
+      }
+    }
+
+    return detalhes
   }
 
   if (loading) {
@@ -109,9 +195,9 @@ export default function AuditoriaPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold dark:text-white">Auditoria do Sistema</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold dark:text-white">{t("audit.title")}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Registro de todas as ações realizadas no sistema
+            {t("audit.description")}
           </p>
         </div>
       </div>
@@ -120,14 +206,14 @@ export default function AuditoriaPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            Histórico de Ações
+            {t("audit.history")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           {auditoria.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 dark:text-gray-400">
-                Nenhum registro de auditoria encontrado
+                {t("audit.noRecords")}
               </p>
             </div>
           ) : (
@@ -135,12 +221,12 @@ export default function AuditoriaPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Data/Hora</TableHead>
-                    <TableHead>Usuário</TableHead>
-                    <TableHead>Ação</TableHead>
-                    <TableHead>Entidade</TableHead>
-                    <TableHead>Detalhes</TableHead>
-                    <TableHead>IP</TableHead>
+                    <TableHead>{t("audit.dateTime")}</TableHead>
+                    <TableHead>{t("audit.user")}</TableHead>
+                    <TableHead>{t("audit.action")}</TableHead>
+                    <TableHead>{t("audit.entity")}</TableHead>
+                    <TableHead>{t("audit.details")}</TableHead>
+                    <TableHead>{t("audit.ip")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -177,12 +263,12 @@ export default function AuditoriaPage() {
                         {getEntidadeLabel(item.entidade)}
                         {item.entidadeId && (
                           <div className="text-xs text-gray-500 dark:text-gray-400">
-                            ID: {item.entidadeId.substring(0, 8)}...
+                            {t("audit.id")}: {item.entidadeId.substring(0, 8)}...
                           </div>
                         )}
                       </TableCell>
                       <TableCell className="dark:text-gray-300 max-w-xs truncate">
-                        {item.detalhes || "-"}
+                        {getTranslatedDetails(item.detalhes, item.acao, item.entidade)}
                       </TableCell>
                       <TableCell className="dark:text-gray-300 text-xs">
                         {item.ipAddress || "-"}

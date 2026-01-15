@@ -185,7 +185,7 @@ export default function NovoEquipamentoPage() {
         setUploading(false)
       }
 
-      const res = await fetch("/api/viaturas", {
+      const res = await fetch("/api/equipamentos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, foto: fotoUrl }),
@@ -199,7 +199,7 @@ export default function NovoEquipamentoPage() {
           title: t("common.success"),
           description: t("equipment.success.created"),
         })
-        // Pequeno delay para garantir que o toast seja exibido antes do redirecionamento
+
         setTimeout(() => {
           router.push(`/module-equipament/admin/equipment/${data.id}`)
         }, 100)
@@ -244,10 +244,10 @@ export default function NovoEquipamentoPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            {/* Progress Steps - Melhorado */}
+            {}
             <div className="mb-10">
               <div className="flex items-center justify-between relative">
-                {/* Linha de fundo */}
+                {}
                 <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 z-0" />
                 <div 
                   className="absolute top-5 left-0 h-0.5 bg-blue-600 z-10 transition-all duration-300"
@@ -283,7 +283,7 @@ export default function NovoEquipamentoPage() {
               </div>
             </div>
 
-          {/* Step 1: Tipo e Identificação */}
+          {}
           {step === 1 && (
             <div className="space-y-6 animate-in fade-in-50 duration-300">
               <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
@@ -369,7 +369,7 @@ export default function NovoEquipamentoPage() {
             </div>
           )}
 
-          {/* Step 2: Informações Básicas */}
+          {}
           {step === 2 && (
             <div className="space-y-6 animate-in fade-in-50 duration-300">
               <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded-r-lg mb-6">
@@ -427,7 +427,7 @@ export default function NovoEquipamentoPage() {
             </div>
           )}
 
-          {/* Step 3: Foto e Descrição */}
+          {}
           {step === 3 && (
             <div className="space-y-6 animate-in fade-in-50 duration-300">
               <div className="bg-purple-50 dark:bg-purple-900/20 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
@@ -514,7 +514,7 @@ export default function NovoEquipamentoPage() {
             </div>
           )}
 
-          {/* Navigation Buttons */}
+          {}
           <div className="flex justify-between items-center mt-10 pt-6 border-t dark:border-gray-700">
             <Button
               variant="outline"

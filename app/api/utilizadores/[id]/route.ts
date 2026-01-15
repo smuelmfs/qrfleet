@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET(
   request: NextRequest,
@@ -53,14 +54,13 @@ export async function PUT(
     }
 
     const user = session.user as any
-    if (user.role !== "ADMIN" && user.id !== params.id) {
+    if (user.role !== "ADMIN" && String(user.id) !== params.id) {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
     }
 
     const body = await request.json()
     const { name, email, password, role } = body
 
-    // Montar dados de atualização apenas com campos enviados
     const updateData: any = {}
 
     if (typeof name === "string" && name.trim() !== "") {
@@ -91,6 +91,19 @@ export async function PUT(
         updatedAt: true,
       },
     })
+
+    const detalhes = password 
+      ? `Usuário atualizado: ${utilizador.email} (senha alterada)`
+      : `Usuário atualizado: ${utilizador.email}`
+    
+    await createAuditLog(
+      user.id,
+      "UPDATE",
+      "USUARIO",
+      utilizador.id,
+      detalhes,
+      request
+    )
 
     return NextResponse.json(utilizador)
   } catch (error) {
@@ -138,6 +151,15 @@ export async function DELETE(
     await prisma.user.delete({
       where: { id: params.id },
     })
+
+    await createAuditLog(
+      user.id,
+      "DELETE",
+      "USUARIO",
+      params.id,
+      `Usuário deletado: ${utilizador.email}`,
+      request
+    )
 
     return NextResponse.json({ message: "Utilizador deletado com sucesso" })
   } catch (error) {

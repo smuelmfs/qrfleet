@@ -6,8 +6,7 @@ export async function GET(
   { params }: { params: { matricula: string } }
 ) {
   try {
-    // Tentar buscar por matrícula primeiro
-    let viatura = await prisma.viatura.findUnique({
+    let equipamento = await prisma.equipamento.findUnique({
       where: { matricula: params.matricula },
       include: {
         documentos: {
@@ -21,9 +20,8 @@ export async function GET(
       },
     })
 
-    // Se não encontrar por matrícula, tentar por parque
-    if (!viatura) {
-      viatura = await prisma.viatura.findFirst({
+    if (!equipamento) {
+      equipamento = await prisma.equipamento.findFirst({
         where: { parque: params.matricula },
         include: {
           documentos: {
@@ -38,25 +36,24 @@ export async function GET(
       })
     }
 
-    if (!viatura) {
+    if (!equipamento) {
       return NextResponse.json(
         { error: "Equipamento não encontrado" },
         { status: 404 }
       )
     }
 
-    // Filtrar apenas informações públicas
-    const viaturaPublica = {
-      id: viatura.id,
-      tipo: viatura.tipo,
-      matricula: viatura.matricula,
-      parque: viatura.parque,
-      modelo: viatura.publicoModelo ? viatura.modelo : undefined,
-      marca: viatura.publicoMarca ? viatura.marca : undefined,
-      ano: viatura.publicoAno ? viatura.ano : undefined,
-      foto: viatura.publicoFoto ? viatura.foto : undefined,
-      descricao: viatura.publicoDescricao ? viatura.descricao : undefined,
-      documentos: viatura.documentos.map((doc) => ({
+    const equipamentoPublico = {
+      id: equipamento.id,
+      tipo: equipamento.tipo,
+      matricula: equipamento.matricula,
+      parque: equipamento.parque,
+      modelo: equipamento.publicoModelo ? equipamento.modelo : undefined,
+      marca: equipamento.publicoMarca ? equipamento.marca : undefined,
+      ano: equipamento.publicoAno ? equipamento.ano : undefined,
+      foto: equipamento.publicoFoto ? equipamento.foto : undefined,
+      descricao: equipamento.publicoDescricao ? equipamento.descricao : undefined,
+      documentos: equipamento.documentos.map((doc) => ({
         id: doc.id,
         titulo: doc.titulo,
         descricao: doc.descricao,
@@ -64,7 +61,7 @@ export async function GET(
         tipo: doc.tipo,
         dataVencimento: doc.dataVencimento,
       })),
-      eventos: viatura.eventos.map((evento) => ({
+      eventos: equipamento.eventos.map((evento) => ({
         id: evento.id,
         titulo: evento.titulo,
         descricao: evento.descricao,
@@ -74,7 +71,7 @@ export async function GET(
       })),
     }
 
-    return NextResponse.json(viaturaPublica)
+    return NextResponse.json(equipamentoPublico)
   } catch (error) {
     return NextResponse.json(
       { error: "Erro ao buscar equipamento" },

@@ -5,15 +5,15 @@ import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
 
-const MAX_FILE_SIZE_IMAGE = 3 * 1024 * 1024 // 3MB para imagens
-const MAX_FILE_SIZE_DOCUMENT = 10 * 1024 * 1024 // 10MB para documentos
+const MAX_FILE_SIZE_IMAGE = 3 * 1024 * 1024 
+const MAX_FILE_SIZE_DOCUMENT = 10 * 1024 * 1024 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
 const ALLOWED_DOCUMENT_TYPES = [
   "application/pdf",
   "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", 
   "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "text/plain",
   "image/jpeg",
   "image/jpg",
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData()
     const file = formData.get("file") as File | null
-    const fileType = formData.get("fileType") as string | null // "image" ou "document"
+    const fileType = formData.get("fileType") as string | null 
 
     if (!file) {
       return NextResponse.json(
@@ -39,12 +39,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Determinar tipo de arquivo se não especificado
     const isImage = file.type.startsWith("image/")
     const isDocument = !isImage
     const actualFileType = fileType || (isImage ? "image" : "document")
 
-    // Validar tipo
     if (actualFileType === "image") {
       if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
         return NextResponse.json(
@@ -52,7 +50,7 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
       }
-      // Validar tamanho para imagens
+
       if (file.size > MAX_FILE_SIZE_IMAGE) {
         return NextResponse.json(
           { error: "Arquivo muito grande. Tamanho máximo: 3MB" },
@@ -66,7 +64,7 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
       }
-      // Validar tamanho para documentos
+
       if (file.size > MAX_FILE_SIZE_DOCUMENT) {
         return NextResponse.json(
           { error: "Arquivo muito grande. Tamanho máximo: 10MB" },
@@ -75,24 +73,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Criar diretório se não existir
     const uploadDir = join(process.cwd(), "public", "uploads")
     if (!existsSync(uploadDir)) {
       await mkdir(uploadDir, { recursive: true })
     }
 
-    // Gerar nome único
     const timestamp = Date.now()
     const extension = file.name.split(".").pop()
     const filename = `${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`
     const filepath = join(uploadDir, filename)
 
-    // Salvar arquivo
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
     await writeFile(filepath, buffer)
 
-    // Retornar URL pública
     const url = `/uploads/${filename}`
 
     return NextResponse.json({ url })

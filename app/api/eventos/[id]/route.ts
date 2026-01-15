@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET(
   request: NextRequest,
@@ -11,7 +12,7 @@ export async function GET(
     const evento = await prisma.evento.findUnique({
       where: { id: params.id },
       include: {
-        viatura: true,
+        equipamento: true,
       },
     })
 
@@ -56,6 +57,16 @@ export async function PUT(
       },
     })
 
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "UPDATE",
+      "EVENTO",
+      evento.id,
+      `Evento atualizado: ${titulo}`,
+      request
+    )
+
     return NextResponse.json(evento)
   } catch (error) {
     console.error(error)
@@ -90,6 +101,16 @@ export async function DELETE(
     await prisma.evento.delete({
       where: { id: params.id },
     })
+
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "DELETE",
+      "EVENTO",
+      params.id,
+      `Evento deletado: ${evento.titulo}`,
+      request
+    )
 
     return NextResponse.json({ message: "Evento deletado com sucesso" })
   } catch (error) {

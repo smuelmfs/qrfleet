@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET(
   request: NextRequest,
@@ -11,7 +12,7 @@ export async function GET(
     const documento = await prisma.documento.findUnique({
       where: { id: params.id },
       include: {
-        viatura: true,
+        equipamento: true,
       },
     })
 
@@ -56,6 +57,16 @@ export async function PUT(
       },
     })
 
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "UPDATE",
+      "DOCUMENTO",
+      documento.id,
+      `Documento atualizado: ${titulo}`,
+      request
+    )
+
     return NextResponse.json(documento)
   } catch (error) {
     console.error(error)
@@ -90,6 +101,16 @@ export async function DELETE(
     await prisma.documento.delete({
       where: { id: params.id },
     })
+
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "DELETE",
+      "DOCUMENTO",
+      params.id,
+      `Documento deletado: ${documento.titulo}`,
+      request
+    )
 
     return NextResponse.json({ message: "Documento deletado com sucesso" })
   } catch (error) {

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET() {
   try {
@@ -54,7 +55,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { name, email, password, role } = body
 
-    // Verificar se o email já existe
     const existing = await prisma.user.findUnique({
       where: { email },
     })
@@ -66,7 +66,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const utilizador = await prisma.user.create({
@@ -84,6 +83,15 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     })
+
+    await createAuditLog(
+      user.id,
+      "CREATE",
+      "USUARIO",
+      utilizador.id,
+      `Usuário criado: ${email} (${role || "EDITOR"})`,
+      request
+    )
 
     return NextResponse.json(utilizador)
   } catch (error) {

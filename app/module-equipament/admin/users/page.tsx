@@ -309,7 +309,7 @@ export default function UtilizadoresPage() {
         </Dialog>
       </div>
 
-      {/* Mobile Cards View */}
+      {}
       <div className="block sm:hidden space-y-4">
         {utilizadores.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
@@ -355,7 +355,7 @@ export default function UtilizadoresPage() {
         )}
       </div>
 
-      {/* Desktop Table View */}
+      {}
       <div className="hidden sm:block bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
         <Table>
           <TableHeader>

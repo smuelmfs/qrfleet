@@ -29,7 +29,7 @@ interface Evento {
   custo?: number
 }
 
-interface Viatura {
+interface Equipamento {
   id: string
   tipo: string
   matricula?: string
@@ -44,36 +44,36 @@ interface Viatura {
   eventos: Evento[]
 }
 
-export default function ViaturaPublicPage({
+export default function EquipamentoPublicPage({
   params,
 }: {
   params: { matricula: string }
 }) {
-  const [viatura, setViatura] = useState<Viatura | null>(null)
+  const [equipamento, setEquipamento] = useState<Equipamento | null>(null)
   const [loading, setLoading] = useState(true)
   const [showImage, setShowImage] = useState(false)
   const { t } = useI18n()
 
-  const fetchViatura = useCallback(async () => {
+  const fetchEquipamento = useCallback(async () => {
     try {
-      const res = await fetch(`/api/viatura/${params.matricula}`)
+      const res = await fetch(`/api/equipamento/${params.matricula}`)
       if (res.ok) {
         const data = await res.json()
-        setViatura(data)
+        setEquipamento(data)
       } else {
-        setViatura(null)
+        setEquipamento(null)
       }
     } catch (error) {
-      console.error("Erro ao buscar viatura:", error)
-      setViatura(null)
+      console.error("Erro ao buscar equipamento:", error)
+      setEquipamento(null)
     } finally {
       setLoading(false)
     }
   }, [params.matricula])
 
   useEffect(() => {
-    fetchViatura()
-  }, [fetchViatura])
+    fetchEquipamento()
+  }, [fetchEquipamento])
 
   const getEventoTipoLabel = (tipo: string) => {
     const labels: Record<string, string> = {
@@ -109,7 +109,7 @@ export default function ViaturaPublicPage({
     return <LoadingSpinner />
   }
 
-  if (!viatura) {
+  if (!equipamento) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
@@ -122,7 +122,6 @@ export default function ViaturaPublicPage({
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Navbar */}
       <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -140,17 +139,17 @@ export default function ViaturaPublicPage({
           <div className="p-6">
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-3xl font-bold dark:text-white">
-                {viatura.marca && viatura.modelo 
-                  ? `${viatura.marca} ${viatura.modelo}`
-                  : viatura.marca 
-                  ? viatura.marca
-                  : viatura.modelo
-                  ? viatura.modelo
-                  : viatura.tipo === "VEICULO" 
-                  ? `Veículo ${viatura.matricula || ""}`
-                  : `Máquina ${viatura.parque || ""}`}
+                {equipamento.marca && equipamento.modelo 
+                  ? `${equipamento.marca} ${equipamento.modelo}`
+                  : equipamento.marca 
+                  ? equipamento.marca
+                  : equipamento.modelo
+                  ? equipamento.modelo
+                  : equipamento.tipo === "VEICULO" 
+                  ? `Veículo ${equipamento.matricula || ""}`
+                  : `Máquina ${equipamento.parque || ""}`}
               </h1>
-              {viatura.foto && (
+              {equipamento.foto && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -167,30 +166,30 @@ export default function ViaturaPublicPage({
               )}
             </div>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
-              {viatura.tipo === "VEICULO" 
-                ? `${t("public.license")}: ${viatura.matricula || "N/A"}`
-                : `Parque: ${viatura.parque || "N/A"}`}
+              {equipamento.tipo === "VEICULO" 
+                ? `${t("public.license")}: ${equipamento.matricula || "N/A"}`
+                : `Parque: ${equipamento.parque || "N/A"}`}
             </p>
-            {viatura.tipo === "MAQUINA" && viatura.peso && (
+            {equipamento.tipo === "MAQUINA" && equipamento.peso && (
               <p className="text-gray-500 dark:text-gray-400 mb-2">
-                Peso: {viatura.peso}
+                Peso: {equipamento.peso}
               </p>
             )}
-            {viatura.ano && (
+            {equipamento.ano && (
               <p className="text-gray-500 dark:text-gray-400 mb-2">
-                {t("public.year")}: {viatura.ano}
+                {t("public.year")}: {equipamento.ano}
               </p>
             )}
-            {viatura.descricao && (
-              <p className="text-gray-700 dark:text-gray-300 mt-4">{viatura.descricao}</p>
+            {equipamento.descricao && (
+              <p className="text-gray-700 dark:text-gray-300 mt-4">{equipamento.descricao}</p>
             )}
           </div>
-          {viatura.foto && showImage && (
+          {equipamento.foto && showImage && (
             <div className="relative w-full h-64 md:h-96 border-t dark:border-gray-700">
               <Image
-                src={viatura.foto}
-                alt={viatura.marca && viatura.modelo 
-                  ? `${viatura.marca} ${viatura.modelo}`
+                src={equipamento.foto}
+                alt={equipamento.marca && equipamento.modelo 
+                  ? `${equipamento.marca} ${equipamento.modelo}`
                   : "Equipamento"}
                 fill
                 className="object-cover"
@@ -211,13 +210,13 @@ export default function ViaturaPublicPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {viatura.documentos.length === 0 ? (
+              {equipamento.documentos.length === 0 ? (
                 <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                   {t("documents.noDocuments")}
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {viatura.documentos.map((documento) => (
+                  {equipamento.documentos.map((documento) => (
                     <div
                       key={documento.id}
                       className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors bg-white dark:bg-gray-800"
@@ -274,17 +273,16 @@ export default function ViaturaPublicPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {viatura.eventos.length === 0 ? (
+              {equipamento.eventos.length === 0 ? (
                 <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                   {t("events.noEvents")}
                 </p>
               ) : (
                 <div className="space-y-6">
-                  {/* Eventos Futuros */}
                   {(() => {
                     const today = new Date()
                     today.setHours(0, 0, 0, 0)
-                    const eventosFuturos = viatura.eventos.filter((evento) => {
+                    const eventosFuturos = equipamento.eventos.filter((evento) => {
                       const eventDate = new Date(evento.data)
                       eventDate.setHours(0, 0, 0, 0)
                       return eventDate >= today
@@ -334,11 +332,10 @@ export default function ViaturaPublicPage({
                     return null
                   })()}
 
-                  {/* Eventos Passados */}
                   {(() => {
                     const today = new Date()
                     today.setHours(0, 0, 0, 0)
-                    const eventosPassados = viatura.eventos.filter((evento) => {
+                    const eventosPassados = equipamento.eventos.filter((evento) => {
                       const eventDate = new Date(evento.data)
                       eventDate.setHours(0, 0, 0, 0)
                       return eventDate < today

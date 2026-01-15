@@ -117,15 +117,15 @@ export default function AdminLayout({
             </div>
           </div>
         </div>
-        {/* Mobile menu - Overlay */}
+        {}
         {mobileMenuOpen && (
           <>
-            {/* Backdrop - only covers content below navbar */}
+            {}
             <div
               className="fixed top-16 left-0 right-0 bottom-0 bg-black/50 z-40 sm:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
-            {/* Menu Panel */}
+            {}
             <div className="fixed top-16 left-0 right-0 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-lg z-50 sm:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
               <div className="px-4 py-4 space-y-1">
                 <Link
@@ -175,10 +175,10 @@ export default function AdminLayout({
                   </>
                 )}
                 
-                {/* Separator */}
+                {}
                 <div className="border-t dark:border-gray-700 my-3" />
                 
-                {/* User info and logout */}
+                {}
                 <div className="px-3 py-2">
                   <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
                     {user.name || user.email}

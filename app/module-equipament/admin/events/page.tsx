@@ -41,8 +41,8 @@ interface Evento {
   tipo: string
   data: string
   custo?: number
-  viaturaId: string
-  viatura?: {
+  equipamentoId: string
+  equipamento?: {
     tipo: string
     matricula?: string
     parque?: string
@@ -50,7 +50,7 @@ interface Evento {
   }
 }
 
-interface Viatura {
+interface Equipamento {
   id: string
   tipo: string
   matricula?: string
@@ -60,14 +60,14 @@ interface Viatura {
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState<Evento[]>([])
-  const [viaturas, setViaturas] = useState<Viatura[]>([])
+  const [equipamentos, setEquipamentos] = useState<Equipamento[]>([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
   const { t } = useI18n()
-  const [filterViatura, setFilterViatura] = useState<string>("all")
+  const [filterEquipamento, setFilterEquipamento] = useState<string>("all")
   const [filterTipo, setFilterTipo] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [groupByViatura, setGroupByViatura] = useState<boolean>(false)
+  const [groupByEquipamento, setGroupByEquipamento] = useState<boolean>(false)
 
   const fetchEventos = useCallback(async () => {
     try {
@@ -85,25 +85,25 @@ export default function EventosPage() {
     }
   }, [toast])
 
-  const fetchViaturas = useCallback(async () => {
+  const fetchEquipamentos = useCallback(async () => {
     try {
-      const res = await fetch("/api/viaturas")
+      const res = await fetch("/api/equipamentos")
       if (!res.ok) {
         throw new Error("Erro ao buscar equipamentos")
       }
       const data = await res.json()
-      // Garantir que data seja sempre um array
-      setViaturas(Array.isArray(data) ? data : [])
+
+      setEquipamentos(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Erro ao carregar equipamentos:", error)
-      setViaturas([]) // Garantir que seja um array mesmo em caso de erro
+      setEquipamentos([]) 
     }
   }, [])
 
   useEffect(() => {
     fetchEventos()
-    fetchViaturas()
-  }, [fetchEventos, fetchViaturas])
+    fetchEquipamentos()
+  }, [fetchEventos, fetchEquipamentos])
 
   const getEventoTipoLabel = (tipo: string) => {
     const labels: Record<string, string> = {
@@ -118,8 +118,6 @@ export default function EventosPage() {
     return labels[tipo] || tipo
   }
 
-
-  // Separar eventos passados e futuros
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -135,66 +133,62 @@ export default function EventosPage() {
     return eventDate >= today
   })
 
-  // Filtrar eventos passados
   const filteredEventosPassados = eventosPassados.filter((evento) => {
-    const matchesViatura = filterViatura === "all" || evento.viaturaId === filterViatura
+    const matchesEquipamento = filterEquipamento === "all" || evento.equipamentoId === filterEquipamento
     const matchesTipo = filterTipo === "all" || evento.tipo === filterTipo
     const matchesSearch =
       searchTerm === "" ||
       evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       evento.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       evento.descricao?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (evento.viatura?.matricula?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      (evento.viatura?.parque?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      evento.viatura?.modelo.toLowerCase().includes(searchTerm.toLowerCase())
+      (evento.equipamento?.matricula?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      (evento.equipamento?.parque?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      evento.equipamento?.modelo.toLowerCase().includes(searchTerm.toLowerCase())
     
-    return matchesViatura && matchesTipo && matchesSearch
+    return matchesEquipamento && matchesTipo && matchesSearch
   })
 
-  // Filtrar eventos futuros
   const filteredEventosFuturos = eventosFuturos.filter((evento) => {
-    const matchesViatura = filterViatura === "all" || evento.viaturaId === filterViatura
+    const matchesEquipamento = filterEquipamento === "all" || evento.equipamentoId === filterEquipamento
     const matchesTipo = filterTipo === "all" || evento.tipo === filterTipo
     const matchesSearch =
       searchTerm === "" ||
       evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       evento.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       evento.descricao?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (evento.viatura?.matricula?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      (evento.viatura?.parque?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      evento.viatura?.modelo.toLowerCase().includes(searchTerm.toLowerCase())
+      (evento.equipamento?.matricula?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      (evento.equipamento?.parque?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      evento.equipamento?.modelo.toLowerCase().includes(searchTerm.toLowerCase())
     
-    return matchesViatura && matchesTipo && matchesSearch
+    return matchesEquipamento && matchesTipo && matchesSearch
   })
 
-  // Agrupar por viatura - Passados
-  const groupedEventosPassados = groupByViatura
+  const groupedEventosPassados = groupByEquipamento
     ? filteredEventosPassados.reduce((acc, evento) => {
-        const key = evento.viaturaId || "sem-viatura"
+        const key = evento.equipamentoId || "sem-equipamento"
         if (!acc[key]) {
           acc[key] = {
-            viatura: evento.viatura || { tipo: "VEICULO", matricula: t("pages.noEquipment"), modelo: "" },
+            equipamento: evento.equipamento || { tipo: "VEICULO", matricula: t("pages.noEquipment"), modelo: "" },
             eventos: [],
           }
         }
         acc[key].eventos.push(evento)
         return acc
-      }, {} as Record<string, { viatura: { tipo: string; matricula?: string; parque?: string; modelo: string }; eventos: Evento[] }>)
+      }, {} as Record<string, { equipamento: { tipo: string; matricula?: string; parque?: string; modelo: string }; eventos: Evento[] }>)
     : null
 
-  // Agrupar por viatura - Futuros
-  const groupedEventosFuturos = groupByViatura
+  const groupedEventosFuturos = groupByEquipamento
     ? filteredEventosFuturos.reduce((acc, evento) => {
-        const key = evento.viaturaId || "sem-viatura"
+        const key = evento.equipamentoId || "sem-equipamento"
         if (!acc[key]) {
           acc[key] = {
-            viatura: evento.viatura || { tipo: "VEICULO", matricula: t("pages.noEquipment"), modelo: "" },
+            equipamento: evento.equipamento || { tipo: "VEICULO", matricula: t("pages.noEquipment"), modelo: "" },
             eventos: [],
           }
         }
         acc[key].eventos.push(evento)
         return acc
-      }, {} as Record<string, { viatura: { tipo: string; matricula?: string; parque?: string; modelo: string }; eventos: Evento[] }>)
+      }, {} as Record<string, { equipamento: { tipo: string; matricula?: string; parque?: string; modelo: string }; eventos: Evento[] }>)
     : null
 
   if (loading) return <LoadingSpinner />
@@ -210,7 +204,7 @@ export default function EventosPage() {
         </div>
       </div>
 
-      {/* Filtros */}
+      {}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-4 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
@@ -240,21 +234,21 @@ export default function EventosPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="filter-viatura" className="flex items-center gap-2">
+            <Label htmlFor="filter-equipamento" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               {t("pages.filter.equipment")}
             </Label>
-            <Select value={filterViatura} onValueChange={setFilterViatura}>
-              <SelectTrigger id="filter-viatura">
+            <Select value={filterEquipamento} onValueChange={setFilterEquipamento}>
+              <SelectTrigger id="filter-equipamento">
                 <SelectValue placeholder={t("pages.filter.all")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("pages.filter.all")}</SelectItem>
-                {Array.isArray(viaturas) && viaturas.map((viatura) => (
-                  <SelectItem key={viatura.id} value={viatura.id}>
-                    {viatura.tipo === "VEICULO" 
-                      ? (viatura.matricula || "N/A")
-                      : (viatura.parque || "N/A")} - {viatura.modelo}
+                {Array.isArray(equipamentos) && equipamentos.map((equipamento) => (
+                  <SelectItem key={equipamento.id} value={equipamento.id}>
+                    {equipamento.tipo === "VEICULO" 
+                      ? (equipamento.matricula || "N/A")
+                      : (equipamento.parque || "N/A")} - {equipamento.modelo}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -287,16 +281,16 @@ export default function EventosPage() {
             {filteredEventosFuturos.length} {t("events.future")} • {filteredEventosPassados.length} {t("events.past")}
           </div>
           <Button
-            variant={groupByViatura ? "default" : "outline"}
+            variant={groupByEquipamento ? "default" : "outline"}
             size="sm"
-            onClick={() => setGroupByViatura(!groupByViatura)}
+            onClick={() => setGroupByEquipamento(!groupByEquipamento)}
           >
-            {groupByViatura ? t("events.normalView") : t("events.groupByVehicle")}
+            {groupByEquipamento ? t("events.normalView") : t("events.groupByVehicle")}
           </Button>
         </div>
       </div>
 
-      {/* Seção: Eventos Futuros */}
+      {}
       {filteredEventosFuturos.length > 0 && (
         <div className="mb-6">
           <h2 className="text-xl font-bold mb-4 dark:text-white flex items-center gap-2">
@@ -304,16 +298,16 @@ export default function EventosPage() {
             {t("events.future")} ({filteredEventosFuturos.length})
           </h2>
           
-          {/* Mobile Cards View - Futuros */}
+          {}
           <div className="block sm:hidden space-y-4">
-            {groupByViatura && groupedEventosFuturos ? (
-              Object.entries(groupedEventosFuturos).map(([viaturaId, group]) => (
-            <div key={viaturaId} className="space-y-3">
+            {groupByEquipamento && groupedEventosFuturos ? (
+              Object.entries(groupedEventosFuturos).map(([equipamentoId, group]) => (
+            <div key={equipamentoId} className="space-y-3">
                 <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-400 p-3 rounded">
                   <h3 className="font-bold text-lg dark:text-white">
-                    {group.viatura.tipo === "VEICULO" 
-                      ? (group.viatura.matricula || "N/A")
-                      : (group.viatura.parque || "N/A")} - {group.viatura.modelo}
+                    {group.equipamento.tipo === "VEICULO" 
+                      ? (group.equipamento.matricula || "N/A")
+                      : (group.equipamento.parque || "N/A")} - {group.equipamento.modelo}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {group.eventos.length} evento(s)
@@ -330,7 +324,7 @@ export default function EventosPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`} className="flex-1">
+                      <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`} className="flex-1">
                         <Button
                           variant="outline"
                           size="sm"
@@ -351,10 +345,10 @@ export default function EventosPage() {
                   <div className="mb-3">
                     <h3 className="font-semibold text-lg dark:text-white">{evento.titulo}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {evento.viatura
-                        ? `${evento.viatura.tipo === "VEICULO" 
-                            ? (evento.viatura.matricula || "N/A")
-                            : (evento.viatura.parque || "N/A")} - ${evento.viatura.modelo}`
+                      {evento.equipamento
+                        ? `${evento.equipamento.tipo === "VEICULO" 
+                            ? (evento.equipamento.matricula || "N/A")
+                            : (evento.equipamento.parque || "N/A")} - ${evento.equipamento.modelo}`
                         : "-"}
                     </p>
                     <div className="flex gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -364,7 +358,7 @@ export default function EventosPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`} className="flex-1">
+                    <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`} className="flex-1">
                       <Button
                         variant="outline"
                         size="sm"
@@ -380,16 +374,16 @@ export default function EventosPage() {
             )}
           </div>
 
-          {/* Desktop Table View - Futuros */}
+          {}
           <div className="hidden sm:block space-y-4">
-            {groupByViatura && groupedEventosFuturos ? (
-              Object.entries(groupedEventosFuturos).map(([viaturaId, group]) => (
-                <div key={viaturaId} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
+            {groupByEquipamento && groupedEventosFuturos ? (
+              Object.entries(groupedEventosFuturos).map(([equipamentoId, group]) => (
+                <div key={equipamentoId} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
                   <div className="bg-blue-50 dark:bg-blue-900/20 border-b p-3">
                     <h3 className="font-bold text-lg dark:text-white">
-                      {group.viatura.tipo === "VEICULO" 
-                      ? (group.viatura.matricula || "N/A")
-                      : (group.viatura.parque || "N/A")} - {group.viatura.modelo}
+                      {group.equipamento.tipo === "VEICULO" 
+                      ? (group.equipamento.matricula || "N/A")
+                      : (group.equipamento.parque || "N/A")} - {group.equipamento.modelo}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {group.eventos.length} evento(s)
@@ -418,7 +412,7 @@ export default function EventosPage() {
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
-                              <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`}>
+                              <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`}>
                                 <Button
                                   variant="outline"
                                   size="icon"
@@ -452,8 +446,8 @@ export default function EventosPage() {
                       <TableRow key={evento.id} className="dark:border-gray-700">
                         <TableCell className="dark:text-gray-300">{evento.titulo}</TableCell>
                         <TableCell className="dark:text-gray-300">
-                          {evento.viatura
-                            ? `${evento.viatura.matricula} - ${evento.viatura.modelo}`
+                          {evento.equipamento
+                            ? `${evento.equipamento.matricula} - ${evento.equipamento.modelo}`
                             : "-"}
                         </TableCell>
                         <TableCell className="dark:text-gray-300">{getEventoTipoLabel(evento.tipo)}</TableCell>
@@ -465,7 +459,7 @@ export default function EventosPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`}>
+                            <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`}>
                               <Button
                                 variant="outline"
                                 size="icon"
@@ -485,7 +479,7 @@ export default function EventosPage() {
         </div>
       )}
 
-      {/* Seção: Eventos Passados */}
+      {}
       {filteredEventosPassados.length > 0 && (
         <div className="mb-6">
           <h2 className="text-xl font-bold mb-4 dark:text-white flex items-center gap-2">
@@ -493,16 +487,16 @@ export default function EventosPage() {
             {t("events.past")} ({filteredEventosPassados.length})
           </h2>
           
-          {/* Mobile Cards View - Passados */}
+          {}
           <div className="block sm:hidden space-y-4">
-            {groupByViatura && groupedEventosPassados ? (
-              Object.entries(groupedEventosPassados).map(([viaturaId, group]) => (
-                <div key={viaturaId} className="space-y-3">
+            {groupByEquipamento && groupedEventosPassados ? (
+              Object.entries(groupedEventosPassados).map(([equipamentoId, group]) => (
+                <div key={equipamentoId} className="space-y-3">
                   <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-400 p-3 rounded">
                     <h3 className="font-bold text-lg dark:text-white">
-                      {group.viatura.tipo === "VEICULO" 
-                      ? (group.viatura.matricula || "N/A")
-                      : (group.viatura.parque || "N/A")} - {group.viatura.modelo}
+                      {group.equipamento.tipo === "VEICULO" 
+                      ? (group.equipamento.matricula || "N/A")
+                      : (group.equipamento.parque || "N/A")} - {group.equipamento.modelo}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {group.eventos.length} evento(s)
@@ -519,7 +513,7 @@ export default function EventosPage() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`} className="flex-1">
+                        <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`} className="flex-1">
                           <Button
                             variant="outline"
                             size="sm"
@@ -540,10 +534,10 @@ export default function EventosPage() {
                   <div className="mb-3">
                     <h3 className="font-semibold text-lg dark:text-white">{evento.titulo}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {evento.viatura
-                        ? `${evento.viatura.tipo === "VEICULO" 
-                            ? (evento.viatura.matricula || "N/A")
-                            : (evento.viatura.parque || "N/A")} - ${evento.viatura.modelo}`
+                      {evento.equipamento
+                        ? `${evento.equipamento.tipo === "VEICULO" 
+                            ? (evento.equipamento.matricula || "N/A")
+                            : (evento.equipamento.parque || "N/A")} - ${evento.equipamento.modelo}`
                         : "-"}
                     </p>
                     <div className="flex gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -553,7 +547,7 @@ export default function EventosPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`} className="flex-1">
+                    <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`} className="flex-1">
                       <Button
                         variant="outline"
                         size="sm"
@@ -569,16 +563,16 @@ export default function EventosPage() {
             )}
           </div>
 
-          {/* Desktop Table View - Passados */}
+          {}
           <div className="hidden sm:block space-y-4">
-            {groupByViatura && groupedEventosPassados ? (
-              Object.entries(groupedEventosPassados).map(([viaturaId, group]) => (
-                <div key={viaturaId} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
+            {groupByEquipamento && groupedEventosPassados ? (
+              Object.entries(groupedEventosPassados).map(([equipamentoId, group]) => (
+                <div key={equipamentoId} className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
                   <div className="bg-blue-50 dark:bg-blue-900/20 border-b p-3">
                     <h3 className="font-bold text-lg dark:text-white">
-                      {group.viatura.tipo === "VEICULO" 
-                      ? (group.viatura.matricula || "N/A")
-                      : (group.viatura.parque || "N/A")} - {group.viatura.modelo}
+                      {group.equipamento.tipo === "VEICULO" 
+                      ? (group.equipamento.matricula || "N/A")
+                      : (group.equipamento.parque || "N/A")} - {group.equipamento.modelo}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {group.eventos.length} evento(s)
@@ -607,7 +601,7 @@ export default function EventosPage() {
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
-                              <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`}>
+                              <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`}>
                                 <Button
                                   variant="outline"
                                   size="icon"
@@ -641,8 +635,8 @@ export default function EventosPage() {
                       <TableRow key={evento.id} className="dark:border-gray-700">
                         <TableCell className="dark:text-gray-300">{evento.titulo}</TableCell>
                         <TableCell className="dark:text-gray-300">
-                          {evento.viatura
-                            ? `${evento.viatura.matricula} - ${evento.viatura.modelo}`
+                          {evento.equipamento
+                            ? `${evento.equipamento.matricula} - ${evento.equipamento.modelo}`
                             : "-"}
                         </TableCell>
                         <TableCell className="dark:text-gray-300">{getEventoTipoLabel(evento.tipo)}</TableCell>
@@ -654,7 +648,7 @@ export default function EventosPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Link href={`/module-equipament/admin/equipment/${evento.viaturaId}?tab=events`}>
+                            <Link href={`/module-equipament/admin/equipment/${evento.equipamentoId}?tab=events`}>
                               <Button
                                 variant="outline"
                                 size="icon"
@@ -674,7 +668,7 @@ export default function EventosPage() {
         </div>
       )}
 
-      {/* Mensagem quando não há eventos */}
+      {}
       {filteredEventosFuturos.length === 0 && filteredEventosPassados.length === 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
           {eventos.length === 0

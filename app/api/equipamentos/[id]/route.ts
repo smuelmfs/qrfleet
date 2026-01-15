@@ -3,37 +3,38 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { generateQRCode } from "@/lib/qrcode"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const viatura = await prisma.viatura.findUnique({
+    const equipamento = await prisma.equipamento.findUnique({
       where: { id: params.id },
       include: {
         documentos: {
           orderBy: { createdAt: "desc" },
-          take: 100, // Limitar a 100 documentos mais recentes
+          take: 100,
         },
         eventos: {
           orderBy: { data: "desc" },
-          take: 100, // Limitar a 100 eventos mais recentes
+          take: 100,
         },
       },
     })
 
-    if (!viatura) {
+    if (!equipamento) {
       return NextResponse.json(
-        { error: "Viatura não encontrada" },
+        { error: "Equipamento não encontrado" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(viatura)
+    return NextResponse.json(equipamento)
   } catch (error) {
     return NextResponse.json(
-      { error: "Erro ao buscar viatura" },
+      { error: "Erro ao buscar equipamento" },
       { status: 500 }
     )
   }
@@ -67,7 +68,6 @@ export async function PUT(
       publicoAno
     } = body
 
-    // Verificar se é apenas atualização de visibilidade
     const isOnlyVisibilityUpdate = 
       tipo === undefined && 
       matricula === undefined && 
@@ -80,9 +80,7 @@ export async function PUT(
 
     const updateData: any = {}
 
-    // Se não for apenas atualização de visibilidade, processar campos normais
     if (!isOnlyVisibilityUpdate) {
-      // Validar tipo
       if (tipo === "VEICULO" && !matricula) {
         return NextResponse.json(
           { error: "Matrícula é obrigatória para veículos" },
@@ -97,9 +95,8 @@ export async function PUT(
         )
       }
 
-      // Verificar se a matrícula ou parque já existe (se mudou)
       if (tipo === "VEICULO" && matricula) {
-        const existing = await prisma.viatura.findUnique({
+        const existing = await prisma.equipamento.findUnique({
           where: { matricula },
         })
 
@@ -112,7 +109,7 @@ export async function PUT(
       }
 
       if (tipo === "MAQUINA" && parque) {
-        const existing = await prisma.viatura.findFirst({
+        const existing = await prisma.equipamento.findFirst({
           where: { parque },
         })
 
@@ -124,7 +121,6 @@ export async function PUT(
         }
       }
 
-      // Gerar QR Code para veículos e máquinas
       let qrCodeDataUrl: string | null = null
       if (tipo === "VEICULO" && matricula) {
         const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${matricula}`
@@ -134,7 +130,6 @@ export async function PUT(
         qrCodeDataUrl = await generateQRCode(publicUrl)
       }
 
-      // Adicionar campos apenas se fornecidos
       if (tipo !== undefined) updateData.tipo = tipo
       if (tipo !== undefined) {
         updateData.matricula = tipo === "VEICULO" ? matricula : null
@@ -153,23 +148,36 @@ export async function PUT(
       if (qrCodeDataUrl !== null) updateData.qrCode = qrCodeDataUrl
     }
 
-    // Adicionar campos de visibilidade se fornecidos
     if (publicoFoto !== undefined) updateData.publicoFoto = publicoFoto
     if (publicoDescricao !== undefined) updateData.publicoDescricao = publicoDescricao
     if (publicoMarca !== undefined) updateData.publicoMarca = publicoMarca
     if (publicoModelo !== undefined) updateData.publicoModelo = publicoModelo
     if (publicoAno !== undefined) updateData.publicoAno = publicoAno
 
-    const viatura = await prisma.viatura.update({
+    const equipamento = await prisma.equipamento.update({
       where: { id: params.id },
       data: updateData,
     })
 
-    return NextResponse.json(viatura)
+    const user = session.user as any
+    const detalhes = isOnlyVisibilityUpdate
+      ? "Visibilidade pública atualizada"
+      : `Equipamento atualizado: ${equipamento.matricula || equipamento.parque} - ${equipamento.marca} ${equipamento.modelo}`
+    
+    await createAuditLog(
+      user.id,
+      "UPDATE",
+      "EQUIPAMENTO",
+      equipamento.id,
+      detalhes,
+      request
+    )
+
+    return NextResponse.json(equipamento)
   } catch (error) {
     console.error(error)
     return NextResponse.json(
-      { error: "Erro ao atualizar viatura" },
+      { error: "Erro ao atualizar equipamento" },
       { status: 500 }
     )
   }
@@ -185,26 +193,38 @@ export async function DELETE(
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
     }
 
-    const viatura = await prisma.viatura.findUnique({
+    const equipamento = await prisma.equipamento.findUnique({
       where: { id: params.id },
     })
 
-    if (!viatura) {
+    if (!equipamento) {
       return NextResponse.json(
-        { error: "Viatura não encontrada" },
+        { error: "Equipamento não encontrado" },
         { status: 404 }
       )
     }
 
-    await prisma.viatura.delete({
+    const identificacao = equipamento.matricula || equipamento.parque || equipamento.id
+    
+    await prisma.equipamento.delete({
       where: { id: params.id },
     })
 
-    return NextResponse.json({ message: "Viatura deletada com sucesso" })
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "DELETE",
+      "EQUIPAMENTO",
+      params.id,
+      `Equipamento deletado: ${identificacao} - ${equipamento.marca} ${equipamento.modelo}`,
+      request
+    )
+
+    return NextResponse.json({ message: "Equipamento deletado com sucesso" })
   } catch (error) {
     console.error(error)
     return NextResponse.json(
-      { error: "Erro ao deletar viatura" },
+      { error: "Erro ao deletar equipamento" },
       { status: 500 }
     )
   }

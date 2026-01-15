@@ -9,7 +9,7 @@ export default function AdminDashboard() {
   const { t } = useI18n()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
-    viaturas: 0,
+    equipamentos: 0,
     documentos: 0,
     eventos: 0,
   })
@@ -17,18 +17,18 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [viaturasRes, documentosRes, eventosRes] = await Promise.all([
-          fetch("/api/viaturas"),
+        const [equipamentosRes, documentosRes, eventosRes] = await Promise.all([
+          fetch("/api/equipamentos"),
           fetch("/api/documentos"),
           fetch("/api/eventos"),
         ])
 
-        const viaturas = await viaturasRes.json()
+        const equipamentos = await equipamentosRes.json()
         const documentos = await documentosRes.json()
         const eventos = await eventosRes.json()
 
         setStats({
-          viaturas: viaturas.length || 0,
+          equipamentos: equipamentos.length || 0,
           documentos: documentos.length || 0,
           eventos: eventos.length || 0,
         })
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
             <CardTitle className="dark:text-white">{t("dashboard.vehicles")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold dark:text-white">{stats.viaturas}</p>
+            <p className="text-3xl font-bold dark:text-white">{stats.equipamentos}</p>
           </CardContent>
         </Card>
         <Card className="dark:bg-gray-800">

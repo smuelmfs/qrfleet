@@ -88,7 +88,6 @@ export default function EquipamentoDetailPage() {
   const [equipamento, setEquipamento] = useState<Equipamento | null>(null)
   const [activeTab, setActiveTab] = useState<string>("info")
   
-  // Estados para edição do equipamento
   const [editEquipamentoOpen, setEditEquipamentoOpen] = useState(false)
   const [equipamentoFormData, setEquipamentoFormData] = useState({
     tipo: "VEICULO",
@@ -105,7 +104,6 @@ export default function EquipamentoDetailPage() {
   const [preview, setPreview] = useState<string>("")
   const [uploading, setUploading] = useState(false)
 
-  // Estados para documentos
   const [documentoOpen, setDocumentoOpen] = useState(false)
   const [editingDocumento, setEditingDocumento] = useState<Documento | null>(null)
   const [documentoFormData, setDocumentoFormData] = useState({
@@ -120,7 +118,6 @@ export default function EquipamentoDetailPage() {
   const [isDraggingDoc, setIsDraggingDoc] = useState(false)
   const [isDraggingFoto, setIsDraggingFoto] = useState(false)
 
-  // Estado para visibilidade pública
   const [visibilidadePublica, setVisibilidadePublica] = useState({
     publicoFoto: false,
     publicoDescricao: false,
@@ -129,11 +126,9 @@ export default function EquipamentoDetailPage() {
     publicoAno: true,
   })
 
-  // Estados para visibilidade de documentos e eventos (aguardando salvamento)
   const [documentosVisibilidade, setDocumentosVisibilidade] = useState<Record<string, boolean>>({})
   const [eventosVisibilidade, setEventosVisibilidade] = useState<Record<string, boolean>>({})
 
-  // Handlers para drag and drop de documentos
   const handleDragOverDoc = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDraggingDoc(true)
@@ -160,7 +155,6 @@ export default function EquipamentoDetailPage() {
     }
   }
 
-  // Handlers para drag and drop de foto
   const handleDragOverFoto = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDraggingFoto(true)
@@ -200,7 +194,6 @@ export default function EquipamentoDetailPage() {
     }
   }
 
-  // Estados para eventos
   const [eventoOpen, setEventoOpen] = useState(false)
   const [editingEvento, setEditingEvento] = useState<Evento | null>(null)
   const [eventoFormData, setEventoFormData] = useState({
@@ -215,7 +208,7 @@ export default function EquipamentoDetailPage() {
 
   const fetchEquipamento = useCallback(async () => {
     try {
-      const res = await fetch(`/api/viaturas/${params.id}`)
+      const res = await fetch(`/api/equipamentos/${params.id}`)
       if (res.ok) {
         const data = await res.json()
         setEquipamento(data)
@@ -238,7 +231,6 @@ export default function EquipamentoDetailPage() {
           publicoModelo: data.publicoModelo ?? true,
           publicoAno: data.publicoAno ?? true,
         })
-        // Inicializar estados de visibilidade de documentos e eventos
         const docsVis: Record<string, boolean> = {}
         const eventosVis: Record<string, boolean> = {}
         data.documentos?.forEach((doc: Documento) => {
@@ -272,7 +264,6 @@ export default function EquipamentoDetailPage() {
     fetchEquipamento()
   }, [fetchEquipamento])
 
-  // Ler query parameter para definir aba ativa
   useEffect(() => {
     const tab = searchParams.get("tab")
     if (tab && ["info", "documents", "events", "visibilidade"].includes(tab)) {
@@ -310,7 +301,7 @@ export default function EquipamentoDetailPage() {
         setUploading(false)
       }
 
-      const res = await fetch(`/api/viaturas/${params.id}`, {
+      const res = await fetch(`/api/equipamentos/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...equipamentoFormData, foto: fotoUrl }),
@@ -384,7 +375,7 @@ export default function EquipamentoDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...documentoFormData,
-          viaturaId: equipamento.id,
+          equipamentoId: equipamento.id,
           arquivo: arquivoUrl,
         }),
       })
@@ -438,7 +429,7 @@ export default function EquipamentoDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...eventoFormData,
-          viaturaId: equipamento.id,
+          equipamentoId: equipamento.id,
         }),
       })
 
@@ -541,7 +532,6 @@ export default function EquipamentoDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 px-4">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
@@ -549,7 +539,7 @@ export default function EquipamentoDetailPage() {
             className="mb-0"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            {t("common.back")}
           </Button>
           {equipamento.qrCode && (
             <Button
@@ -557,12 +547,11 @@ export default function EquipamentoDetailPage() {
               onClick={() => router.push(`/module-equipament/admin/equipment/${equipamento.id}/qr`)}
             >
               <QrCode className="mr-2 h-4 w-4" />
-              Ver QR Code
+              {t("equipment.details.viewQr")}
             </Button>
           )}
         </div>
 
-        {/* Hero Section */}
         <Card className="overflow-hidden shadow-lg dark:bg-gray-800">
           <div className="grid md:grid-cols-2 gap-6 p-6">
             {equipamento.foto ? (
@@ -593,7 +582,7 @@ export default function EquipamentoDetailPage() {
                       ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                       : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
                   }`}>
-                    {equipamento.tipo === "VEICULO" ? "Veículo" : "Máquina"}
+                    {equipamento.tipo === "VEICULO" ? t("equipment.type.vehicle") : t("equipment.type.machine")}
                   </span>
                 </div>
                 <h1 className="text-3xl font-bold mb-2">{identificador}</h1>
@@ -606,7 +595,7 @@ export default function EquipamentoDetailPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <Tag className="h-4 w-4" />
-                    <span>Identificação</span>
+                    <span>{t("equipment.details.identification")}</span>
                   </div>
                   <p className="text-lg font-semibold">
                     {equipamento.tipo === "VEICULO" 
@@ -617,21 +606,21 @@ export default function EquipamentoDetailPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <Calendar className="h-4 w-4" />
-                    <span>Ano</span>
+                    <span>{t("vehicles.year")}</span>
                   </div>
                   <p className="text-lg font-semibold">{equipamento.ano}</p>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <Building2 className="h-4 w-4" />
-                    <span>Marca</span>
+                    <span>{t("vehicles.brand")}</span>
                   </div>
                   <p className="text-lg font-semibold">{equipamento.marca}</p>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <Car className="h-4 w-4" />
-                    <span>Modelo</span>
+                    <span>{t("vehicles.model")}</span>
                   </div>
                   <p className="text-lg font-semibold">{equipamento.modelo}</p>
                 </div>
@@ -639,7 +628,7 @@ export default function EquipamentoDetailPage() {
 
               {equipamento.descricao && (
                 <div className="pt-4 border-t dark:border-gray-700">
-                  <Label className="text-sm font-semibold mb-2 block">Descrição</Label>
+                  <Label className="text-sm font-semibold mb-2 block">{t("equipment.details.description")}</Label>
                   <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     {equipamento.descricao}
                   </p>
@@ -671,7 +660,7 @@ export default function EquipamentoDetailPage() {
             </TabsTrigger>
             <TabsTrigger value="visibilidade" className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
-              Visibilidade
+              {t("equipment.details.tabs.visibility")}
             </TabsTrigger>
           </TabsList>
 
@@ -690,7 +679,7 @@ export default function EquipamentoDetailPage() {
                 </div>
                 <Button onClick={() => setEditEquipamentoOpen(true)}>
                   <Edit className="mr-2 h-4 w-4" />
-                  Editar
+                  {t("common.edit")}
                 </Button>
               </div>
             </CardHeader>
@@ -972,7 +961,7 @@ export default function EquipamentoDetailPage() {
                 <File className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-gray-500 dark:text-gray-400">Nenhum documento cadastrado</p>
                 <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
-                  Clique em "Adicionar Documento" para começar
+                  Clique em &quot;Adicionar Documento&quot; para começar
                 </p>
               </div>
             ) : (
@@ -1193,7 +1182,7 @@ export default function EquipamentoDetailPage() {
                 <Calendar className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-gray-500 dark:text-gray-400">Nenhum evento cadastrado</p>
                 <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
-                  Clique em "Adicionar Evento" para começar
+                  Clique em &quot;Adicionar Evento&quot; para começar
                 </p>
               </div>
             ) : (
@@ -1288,7 +1277,6 @@ export default function EquipamentoDetailPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Informações do Equipamento */}
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg dark:text-white">{t("equipment.details.visibility.equipment")}</h3>
                 <div className="space-y-3">
@@ -1365,7 +1353,6 @@ export default function EquipamentoDetailPage() {
                 </div>
               </div>
 
-              {/* Documentos */}
               <div className="space-y-4 border-t pt-4">
                 <h3 className="font-semibold text-lg dark:text-white">{t("equipment.details.tabs.documents")}</h3>
                 {equipamento.documentos.length === 0 ? (
@@ -1404,7 +1391,6 @@ export default function EquipamentoDetailPage() {
                 )}
               </div>
 
-              {/* Eventos */}
               <div className="space-y-4 border-t pt-4">
                 <h3 className="font-semibold text-lg dark:text-white">{t("equipment.details.tabs.events")}</h3>
                 {equipamento.eventos.length === 0 ? (
@@ -1443,13 +1429,11 @@ export default function EquipamentoDetailPage() {
                 )}
               </div>
 
-              {/* Botão Salvar */}
               <div className="flex justify-end pt-4 border-t">
                 <Button
                   onClick={async () => {
                     try {
-                      // Salvar visibilidade do equipamento
-                      const resEquipamento = await fetch(`/api/viaturas/${params.id}`, {
+                      const resEquipamento = await fetch(`/api/equipamentos/${params.id}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(visibilidadePublica),
@@ -1459,7 +1443,6 @@ export default function EquipamentoDetailPage() {
                         throw new Error("Erro ao salvar visibilidade do equipamento")
                       }
 
-                      // Salvar visibilidade de documentos
                       const promisesDocumentos = Object.entries(documentosVisibilidade).map(
                         async ([docId, publico]) => {
                           const doc = equipamento?.documentos.find((d) => d.id === docId)
@@ -1477,7 +1460,6 @@ export default function EquipamentoDetailPage() {
                         }
                       )
 
-                      // Salvar visibilidade de eventos
                       const promisesEventos = Object.entries(eventosVisibilidade).map(
                         async ([eventoId, publico]) => {
                           const evento = equipamento?.eventos.find((e) => e.id === eventoId)
@@ -1495,7 +1477,6 @@ export default function EquipamentoDetailPage() {
                         }
                       )
 
-                      // Aguardar todas as requisições
                       await Promise.all([
                         ...promisesDocumentos.filter((p) => p !== null),
                         ...promisesEventos.filter((p) => p !== null),
@@ -1523,7 +1504,6 @@ export default function EquipamentoDetailPage() {
         </TabsContent>
       </Tabs>
 
-      {/* Dialog de edição do equipamento */}
       <Dialog open={editEquipamentoOpen} onOpenChange={setEditEquipamentoOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleEquipamentoSubmit}>

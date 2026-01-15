@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const viaturaId = searchParams.get("viaturaId")
+    const equipamentoId = searchParams.get("equipamentoId")
 
     const documentos = await prisma.documento.findMany({
-      where: viaturaId ? { viaturaId } : undefined,
+      where: equipamentoId ? { equipamentoId } : undefined,
       select: {
         id: true,
-        viaturaId: true,
+        equipamentoId: true,
         titulo: true,
         descricao: true,
         arquivo: true,
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
         publico: true,
         createdAt: true,
         updatedAt: true,
-        viatura: {
+        equipamento: {
           select: {
             matricula: true,
             parque: true,
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: "desc",
       },
-      take: 500, // Limitar resultados
+      take: 500, 
     })
 
     return NextResponse.json(documentos)
@@ -53,11 +54,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { viaturaId, titulo, descricao, arquivo, tipo, dataVencimento, publico } = body
+    const { equipamentoId, titulo, descricao, arquivo, tipo, dataVencimento, publico } = body
 
     const documento = await prisma.documento.create({
       data: {
-        viaturaId,
+        equipamentoId,
         titulo,
         descricao,
         arquivo,
@@ -66,6 +67,16 @@ export async function POST(request: NextRequest) {
         publico: publico !== undefined ? publico : false,
       },
     })
+
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "CREATE",
+      "DOCUMENTO",
+      documento.id,
+      `Documento criado: ${titulo} (${tipo})`,
+      request
+    )
 
     return NextResponse.json(documento)
   } catch (error) {

@@ -39,18 +39,13 @@ export default function LoginPage() {
       }
 
       if (result?.ok) {
-        // Aguardar um pouco para garantir que a sessão foi criada no servidor
         await new Promise(resolve => setTimeout(resolve, 100))
         
-        // Verificar se a sessão foi criada corretamente
         const session = await getSession()
         
         if (session) {
-          // Forçar reload completo da página para garantir que a sessão seja lida corretamente
-          // Isso resolve o problema de a sessão não estar disponível imediatamente após o login
           window.location.href = "/modules"
         } else {
-          // Se ainda não houver sessão, tentar novamente após um pequeno delay
           await new Promise(resolve => setTimeout(resolve, 300))
           const retrySession = await getSession()
           

@@ -2,7 +2,6 @@ export type Locale = "pt" | "en" | "fr"
 
 export const translations: Record<Locale, Record<string, string>> = {
   pt: {
-    // Common
     "common.loading": "Carregando...",
     "common.save": "Salvar",
     "common.cancel": "Cancelar",
@@ -18,20 +17,18 @@ export const translations: Record<Locale, Record<string, string>> = {
     "common.success": "Sucesso",
     "common.error": "Erro",
     "common.accessDenied": "Acesso negado",
+    "common.back": "Voltar",
     
-    // Delete confirmation
     "delete.confirmTitle": "Confirmar exclusão",
     "delete.confirmDescription": "Esta ação irá excluir permanentemente {entity} {identifier}. Esta operação não pode ser desfeita.",
     "delete.confirmInstruction": "Para confirmar, escreva a palavra",
     "common.noResults": "Nenhum resultado encontrado com os filtros aplicados",
     
-    // Dashboard
     "dashboard.title": "Dashboard",
     "dashboard.vehicles": "Equipamentos",
     "dashboard.documents": "Documentos",
     "dashboard.events": "Eventos",
     
-    // Navigation
     "nav.vehicles": "Equipamentos",
     "nav.documents": "Documentos",
     "nav.events": "Eventos",
@@ -39,7 +36,6 @@ export const translations: Record<Locale, Record<string, string>> = {
     "nav.profile": "Perfil",
     "nav.logout": "Sair",
     
-    // Profile
     "profile.title": "Perfil",
     "profile.userInfo": "Informações do Usuário",
     "profile.userInfoDesc": "Suas informações de conta",
@@ -60,8 +56,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.profileUpdatedWithPassword": "Perfil e senha atualizados com sucesso",
     "profile.success": "Sucesso",
     "profile.error": "Erro",
-    
-    // Vehicles
+
     "vehicles.title": "Equipamentos",
     "vehicles.new": "Novo Equipamento",
     "vehicles.edit": "Editar Equipamento",
@@ -78,8 +73,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "vehicles.allBrands": "Todas as marcas",
     "vehicles.allModels": "Todos os modelos",
     "vehicles.allYears": "Todos os anos",
-    
-    // Documents
+
     "documents.title": "Documentos",
     "documents.new": "Novo Documento",
     "documents.edit": "Editar Documento",
@@ -89,8 +83,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "documents.type": "Tipo",
     "documents.expiration": "Data de Vencimento",
     "documents.noDocuments": "Nenhum documento disponível",
-    
-    // Events
+
     "events.title": "Eventos",
     "events.new": "Novo Evento",
     "events.edit": "Editar Evento",
@@ -118,8 +111,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.future": "Eventos Futuros",
     "events.scheduled": "Agendados",
     "events.completed": "Realizados",
-    
-    // Public Vehicle Page
+
     "public.vehicleNotFound": "Equipamento não encontrado",
     "public.license": "Matrícula",
     "public.year": "Ano",
@@ -131,8 +123,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "public.hideImage": "Ocultar Imagem",
     "public.type": "Tipo",
     "public.expiration": "Vencimento",
-    
-    // Users
+
     "users.title": "Utilizadores",
     "users.new": "Novo Utilizador",
     "users.edit": "Editar Utilizador",
@@ -151,8 +142,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.saveError": "Erro ao salvar utilizador",
     "users.deleteError": "Erro ao deletar utilizador",
     "users.adminOnly": "Apenas administradores podem acessar esta página.",
-    
-    // Form labels and messages
+
     "form.selectVehicle": "Selecione um equipamento",
     "form.updateInfo": "Atualize as informações",
     "form.fillData": "Preencha os dados",
@@ -168,8 +158,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.of": "de",
     "form.document": "documento(s)",
     "form.event": "evento(s)",
-    
-    // Equipment creation/editing
+
     "equipment.new.title": "Novo Equipamento",
     "equipment.step1.title": "Tipo e Identificação",
     "equipment.step1.description": "Primeiro, identifique o tipo de equipamento e seu identificador único",
@@ -223,8 +212,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.error.create": "Erro ao criar equipamento",
     "equipment.error.update": "Erro ao atualizar equipamento",
     "equipment.error.upload": "Erro ao fazer upload da imagem",
-    
-    // Equipment details page
+
     "equipment.details.title": "Detalhes do Equipamento",
     "equipment.details.edit": "Editar",
     "equipment.details.tabs.info": "Informações",
@@ -240,6 +228,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.details.park": "Parque",
     "equipment.details.license": "Matrícula",
     "equipment.details.description": "Descrição",
+    "equipment.details.viewQr": "Ver QR Code",
     "equipment.details.visibility.title": "Configurações de Visibilidade Pública",
     "equipment.details.visibility.description": "Configure quais informações serão visíveis na página pública",
     "equipment.details.visibility.equipment": "Visibilidade do Equipamento",
@@ -256,8 +245,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.details.visibility.ano": "Ano",
     "equipment.details.visibility.noDocuments": "Nenhum documento cadastrado",
     "equipment.details.visibility.noEvents": "Nenhum evento cadastrado",
-    
-    // Documents and Events in equipment details
+
     "equipment.documents.title": "Documentos",
     "equipment.documents.description": "Gerencie os documentos associados a este equipamento",
     "equipment.documents.add": "Adicionar Documento",
@@ -284,8 +272,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.events.date": "Data",
     "equipment.events.cost": "Custo (€)",
     "equipment.events.noEvents": "Nenhum evento cadastrado",
-    
-    // Documents and Events pages
+
     "pages.viewOnly": "Visualize os {type}. Para adicionar ou editar, acesse a página do equipamento.",
     "pages.viewOnly.documents": "documentos",
     "pages.viewOnly.events": "eventos",
@@ -296,8 +283,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pages.edit": "Editar",
     "pages.editInEquipment": "Editar no Equipamento",
     "pages.noEquipment": "Sem equipamento",
-    
-    // Modules page
+
     "modules.title": "Sistema de Gestão",
     "modules.available": "Módulos Disponíveis",
     "modules.select": "Selecione o módulo que deseja acessar",
@@ -309,12 +295,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     "modules.unavailable": "Indisponível",
     "modules.unavailable.message": "Módulo indisponível no momento",
     "modules.back": "Módulos",
-    
-    // Navigation
+
     "nav.audit": "Auditoria",
     "nav.backToModules": "← Módulos",
-    
-    // Equipment list page
+
     "equipment.list.new": "Novo Equipamento",
     "equipment.list.newShort": "Novo",
     "equipment.list.filters": "Filtros e Pesquisa",
@@ -343,8 +327,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.list.year": "Ano",
     "equipment.list.documents": "Documentos",
     "equipment.list.events": "Eventos",
-    
-    // PDF QR Code
+
     "pdf.qrCode.title": "QR Code do Equipamento",
     "pdf.qrCode.equipmentInfo": "Informações do Equipamento",
     "pdf.qrCode.license": "Matrícula",
@@ -356,9 +339,44 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pdf.qrCode.generated": "Gerado em",
     "pdf.qrCode.success": "QR Code baixado em PDF com sucesso",
     "pdf.qrCode.error": "Erro ao gerar PDF do QR Code",
+
+    "audit.title": "Auditoria do Sistema",
+    "audit.description": "Registro de todas as ações realizadas no sistema",
+    "audit.history": "Histórico de Ações",
+    "audit.noRecords": "Nenhum registro de auditoria encontrado",
+    "audit.dateTime": "Data/Hora",
+    "audit.user": "Usuário",
+    "audit.action": "Ação",
+    "audit.entity": "Entidade",
+    "audit.details": "Detalhes",
+    "audit.ip": "IP",
+    "audit.actions.create": "Criar",
+    "audit.actions.update": "Atualizar",
+    "audit.actions.delete": "Deletar",
+    "audit.actions.login": "Login",
+    "audit.actions.logout": "Logout",
+    "audit.entities.equipment": "Equipamento",
+    "audit.entities.document": "Documento",
+    "audit.entities.event": "Evento",
+    "audit.entities.user": "Usuário",
+    "audit.id": "ID",
+    "audit.details.equipmentCreated": "Equipamento criado: {details}",
+    "audit.details.equipmentUpdated": "Equipamento atualizado: {details}",
+    "audit.details.equipmentDeleted": "Equipamento deletado: {details}",
+    "audit.details.visibilityUpdated": "Visibilidade pública atualizada",
+    "audit.details.documentCreated": "Documento criado: {details}",
+    "audit.details.documentUpdated": "Documento atualizado: {details}",
+    "audit.details.documentDeleted": "Documento deletado: {details}",
+    "audit.details.eventCreated": "Evento criado: {details}",
+    "audit.details.eventUpdated": "Evento atualizado: {details}",
+    "audit.details.eventDeleted": "Evento deletado: {details}",
+    "audit.details.userCreated": "Usuário criado: {details}",
+    "audit.details.userUpdated": "Usuário atualizado: {details}",
+    "audit.details.userDeleted": "Usuário deletado: {details}",
+    "audit.details.login": "Login realizado: {details}",
   },
   en: {
-    // Common
+
     "common.loading": "Loading...",
     "common.save": "Save",
     "common.cancel": "Cancel",
@@ -374,28 +392,25 @@ export const translations: Record<Locale, Record<string, string>> = {
     "common.success": "Success",
     "common.error": "Error",
     "common.accessDenied": "Access denied",
-    
-    // Delete confirmation
+    "common.back": "Back",
+
     "delete.confirmTitle": "Confirm deletion",
     "delete.confirmDescription": "This action will permanently delete {entity} {identifier}. This operation cannot be undone.",
     "delete.confirmInstruction": "To confirm, type the word",
     "common.noResults": "No results found with applied filters",
-    
-    // Dashboard
+
     "dashboard.title": "Dashboard",
     "dashboard.vehicles": "Equipment",
     "dashboard.documents": "Documents",
     "dashboard.events": "Events",
-    
-    // Navigation
+
     "nav.vehicles": "Equipment",
     "nav.documents": "Documents",
     "nav.events": "Events",
     "nav.users": "Users",
     "nav.profile": "Profile",
     "nav.logout": "Logout",
-    
-    // Profile
+
     "profile.title": "Profile",
     "profile.userInfo": "User Information",
     "profile.userInfoDesc": "Your account information",
@@ -416,8 +431,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.profileUpdatedWithPassword": "Profile and password updated successfully",
     "profile.success": "Success",
     "profile.error": "Error",
-    
-    // Vehicles
+
     "vehicles.title": "Equipment",
     "vehicles.new": "New Equipment",
     "vehicles.edit": "Edit Equipment",
@@ -434,8 +448,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "vehicles.allBrands": "All brands",
     "vehicles.allModels": "All models",
     "vehicles.allYears": "All years",
-    
-    // Documents
+
     "documents.title": "Documents",
     "documents.new": "New Document",
     "documents.edit": "Edit Document",
@@ -445,8 +458,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "documents.type": "Type",
     "documents.expiration": "Expiration Date",
     "documents.noDocuments": "No documents available",
-    
-    // Events
+
     "events.title": "Events",
     "events.new": "New Event",
     "events.edit": "Edit Event",
@@ -474,8 +486,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.future": "Future Events",
     "events.scheduled": "Scheduled",
     "events.completed": "Completed",
-    
-    // Public Vehicle Page
+
     "public.vehicleNotFound": "Equipment not found",
     "public.license": "License Plate",
     "public.year": "Year",
@@ -487,8 +498,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "public.hideImage": "Hide Image",
     "public.type": "Type",
     "public.expiration": "Expiration",
-    
-    // Users
+
     "users.title": "Users",
     "users.new": "New User",
     "users.edit": "Edit User",
@@ -507,8 +517,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.saveError": "Error saving user",
     "users.deleteError": "Error deleting user",
     "users.adminOnly": "Only administrators can access this page.",
-    
-    // Form labels and messages
+
     "form.selectVehicle": "Select equipment",
     "form.updateInfo": "Update the information",
     "form.fillData": "Fill in the data",
@@ -524,8 +533,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.of": "of",
     "form.document": "document(s)",
     "form.event": "event(s)",
-    
-    // Equipment creation/editing
+
     "equipment.new.title": "New Equipment",
     "equipment.step1.title": "Type and Identification",
     "equipment.step1.description": "First, identify the equipment type and its unique identifier",
@@ -579,8 +587,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.error.create": "Error creating equipment",
     "equipment.error.update": "Error updating equipment",
     "equipment.error.upload": "Error uploading image",
-    
-    // Equipment details page
+
     "equipment.details.title": "Equipment Details",
     "equipment.details.edit": "Edit",
     "equipment.details.tabs.info": "Information",
@@ -596,6 +603,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.details.park": "Park",
     "equipment.details.license": "License Plate",
     "equipment.details.description": "Description",
+    "equipment.details.viewQr": "View QR Code",
     "equipment.details.visibility.title": "Public Visibility Settings",
     "equipment.details.visibility.description": "Configure which information will be visible on the public page",
     "equipment.details.visibility.equipment": "Equipment Visibility",
@@ -612,8 +620,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.details.visibility.ano": "Year",
     "equipment.details.visibility.noDocuments": "No documents registered",
     "equipment.details.visibility.noEvents": "No events registered",
-    
-    // Documents and Events in equipment details
+
     "equipment.documents.title": "Documents",
     "equipment.documents.description": "Manage documents associated with this equipment",
     "equipment.documents.add": "Add Document",
@@ -640,8 +647,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.events.date": "Date",
     "equipment.events.cost": "Cost (€)",
     "equipment.events.noEvents": "No events registered",
-    
-    // Documents and Events pages
+
     "pages.viewOnly": "View {type}. To add or edit, access the equipment page.",
     "pages.viewOnly.documents": "documents",
     "pages.viewOnly.events": "events",
@@ -652,8 +658,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pages.edit": "Edit",
     "pages.editInEquipment": "Edit in Equipment",
     "pages.noEquipment": "No equipment",
-    
-    // Modules page
+
     "modules.title": "Management System",
     "modules.available": "Available Modules",
     "modules.select": "Select the module you want to access",
@@ -665,12 +670,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     "modules.unavailable": "Unavailable",
     "modules.unavailable.message": "Module unavailable at the moment",
     "modules.back": "Modules",
-    
-    // Navigation
+
     "nav.audit": "Audit",
     "nav.backToModules": "← Modules",
-    
-    // Equipment list page
+
     "equipment.list.new": "New Equipment",
     "equipment.list.newShort": "New",
     "equipment.list.filters": "Filters and Search",
@@ -699,8 +702,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.list.year": "Year",
     "equipment.list.documents": "Documents",
     "equipment.list.events": "Events",
-    
-    // PDF QR Code
+
     "pdf.qrCode.title": "Equipment QR Code",
     "pdf.qrCode.equipmentInfo": "Equipment Information",
     "pdf.qrCode.license": "License Plate",
@@ -712,9 +714,44 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pdf.qrCode.generated": "Generated on",
     "pdf.qrCode.success": "QR Code downloaded as PDF successfully",
     "pdf.qrCode.error": "Error generating QR Code PDF",
+
+    "audit.title": "System Audit",
+    "audit.description": "Record of all actions performed in the system",
+    "audit.history": "Action History",
+    "audit.noRecords": "No audit records found",
+    "audit.dateTime": "Date/Time",
+    "audit.user": "User",
+    "audit.action": "Action",
+    "audit.entity": "Entity",
+    "audit.details": "Details",
+    "audit.ip": "IP",
+    "audit.actions.create": "Create",
+    "audit.actions.update": "Update",
+    "audit.actions.delete": "Delete",
+    "audit.actions.login": "Login",
+    "audit.actions.logout": "Logout",
+    "audit.entities.equipment": "Equipment",
+    "audit.entities.document": "Document",
+    "audit.entities.event": "Event",
+    "audit.entities.user": "User",
+    "audit.id": "ID",
+    "audit.details.equipmentCreated": "Equipment created: {details}",
+    "audit.details.equipmentUpdated": "Equipment updated: {details}",
+    "audit.details.equipmentDeleted": "Equipment deleted: {details}",
+    "audit.details.visibilityUpdated": "Public visibility updated",
+    "audit.details.documentCreated": "Document created: {details}",
+    "audit.details.documentUpdated": "Document updated: {details}",
+    "audit.details.documentDeleted": "Document deleted: {details}",
+    "audit.details.eventCreated": "Event created: {details}",
+    "audit.details.eventUpdated": "Event updated: {details}",
+    "audit.details.eventDeleted": "Event deleted: {details}",
+    "audit.details.userCreated": "User created: {details}",
+    "audit.details.userUpdated": "User updated: {details}",
+    "audit.details.userDeleted": "User deleted: {details}",
+    "audit.details.login": "Login performed: {details}",
   },
   fr: {
-    // Common
+
     "common.loading": "Chargement...",
     "common.save": "Enregistrer",
     "common.cancel": "Annuler",
@@ -730,28 +767,25 @@ export const translations: Record<Locale, Record<string, string>> = {
     "common.success": "Succès",
     "common.error": "Erreur",
     "common.accessDenied": "Accès refusé",
-    
-    // Delete confirmation
+    "common.back": "Retour",
+
     "delete.confirmTitle": "Confirmer la suppression",
     "delete.confirmDescription": "Cette action supprimera définitivement {entity} {identifier}. Cette opération est irréversible.",
     "delete.confirmInstruction": "Pour confirmer, tapez le mot",
     "common.noResults": "Aucun résultat trouvé avec les filtres appliqués",
-    
-    // Dashboard
+
     "dashboard.title": "Tableau de Bord",
     "dashboard.vehicles": "Équipements",
     "dashboard.documents": "Documents",
     "dashboard.events": "Événements",
-    
-    // Navigation
+
     "nav.vehicles": "Équipements",
     "nav.documents": "Documents",
     "nav.events": "Événements",
     "nav.users": "Utilisateurs",
     "nav.profile": "Profil",
     "nav.logout": "Déconnexion",
-    
-    // Profile
+
     "profile.title": "Profil",
     "profile.userInfo": "Informations de l'Utilisateur",
     "profile.userInfoDesc": "Vos informations de compte",
@@ -772,8 +806,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "profile.profileUpdatedWithPassword": "Profil et mot de passe mis à jour avec succès",
     "profile.success": "Succès",
     "profile.error": "Erreur",
-    
-    // Vehicles
+
     "vehicles.title": "Équipements",
     "vehicles.new": "Nouvel Équipement",
     "vehicles.edit": "Modifier l'Équipement",
@@ -790,8 +823,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "vehicles.allBrands": "Toutes les marques",
     "vehicles.allModels": "Tous les modèles",
     "vehicles.allYears": "Toutes les années",
-    
-    // Documents
+
     "documents.title": "Documents",
     "documents.new": "Nouveau Document",
     "documents.edit": "Modifier le Document",
@@ -801,8 +833,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "documents.type": "Type",
     "documents.expiration": "Date d'expiration",
     "documents.noDocuments": "Aucun document disponible",
-    
-    // Events
+
     "events.title": "Événements",
     "events.new": "Nouvel Événement",
     "events.edit": "Modifier l'Événement",
@@ -830,8 +861,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "events.future": "Événements Futurs",
     "events.scheduled": "Planifiés",
     "events.completed": "Réalisés",
-    
-    // Public Vehicle Page
+
     "public.vehicleNotFound": "Équipement non trouvé",
     "public.license": "Plaque d'immatriculation",
     "public.year": "Année",
@@ -843,8 +873,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "public.hideImage": "Masquer l'Image",
     "public.type": "Type",
     "public.expiration": "Expiration",
-    
-    // Users
+
     "users.title": "Utilisateurs",
     "users.new": "Nouvel Utilisateur",
     "users.edit": "Modifier l'Utilisateur",
@@ -863,8 +892,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "users.saveError": "Erreur lors de l'enregistrement de l'utilisateur",
     "users.deleteError": "Erreur lors de la suppression de l'utilisateur",
     "users.adminOnly": "Seuls les administrateurs peuvent accéder à cette page.",
-    
-    // Form labels and messages
+
     "form.selectVehicle": "Sélectionnez un équipement",
     "form.updateInfo": "Mettez à jour les informations",
     "form.fillData": "Remplissez les données",
@@ -880,8 +908,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "form.of": "de",
     "form.document": "document(s)",
     "form.event": "événement(s)",
-    
-    // Equipment creation/editing
+
     "equipment.new.title": "Nouvel Équipement",
     "equipment.step1.title": "Type et Identification",
     "equipment.step1.description": "D'abord, identifiez le type d'équipement et son identifiant unique",
@@ -935,8 +962,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.error.create": "Erreur lors de la création de l'équipement",
     "equipment.error.update": "Erreur lors de la mise à jour de l'équipement",
     "equipment.error.upload": "Erreur lors du téléchargement de l'image",
-    
-    // Equipment details page
+
     "equipment.details.title": "Détails de l'Équipement",
     "equipment.details.edit": "Modifier",
     "equipment.details.tabs.info": "Informations",
@@ -952,6 +978,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.details.park": "Parc",
     "equipment.details.license": "Plaque d'immatriculation",
     "equipment.details.description": "Description",
+    "equipment.details.viewQr": "Voir le Code QR",
     "equipment.details.visibility.title": "Paramètres de Visibilité Publique",
     "equipment.details.visibility.description": "Configurez les informations qui seront visibles sur la page publique",
     "equipment.details.visibility.equipment": "Visibilité de l'Équipement",
@@ -968,8 +995,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.details.visibility.ano": "Année",
     "equipment.details.visibility.noDocuments": "Aucun document enregistré",
     "equipment.details.visibility.noEvents": "Aucun événement enregistré",
-    
-    // Documents and Events in equipment details
+
     "equipment.documents.title": "Documents",
     "equipment.documents.description": "Gérez les documents associés à cet équipement",
     "equipment.documents.add": "Ajouter un Document",
@@ -996,8 +1022,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.events.date": "Date",
     "equipment.events.cost": "Coût (€)",
     "equipment.events.noEvents": "Aucun événement enregistré",
-    
-    // Documents and Events pages
+
     "pages.viewOnly": "Visualisez les {type}. Pour ajouter ou modifier, accédez à la page de l'équipement.",
     "pages.viewOnly.documents": "documents",
     "pages.viewOnly.events": "événements",
@@ -1008,8 +1033,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pages.edit": "Modifier",
     "pages.editInEquipment": "Modifier dans l'Équipement",
     "pages.noEquipment": "Aucun équipement",
-    
-    // Modules page
+
     "modules.title": "Système de Gestion",
     "modules.available": "Modules Disponibles",
     "modules.select": "Sélectionnez le module que vous souhaitez accéder",
@@ -1021,12 +1045,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     "modules.unavailable": "Indisponible",
     "modules.unavailable.message": "Module indisponible pour le moment",
     "modules.back": "Modules",
-    
-    // Navigation
+
     "nav.audit": "Audit",
     "nav.backToModules": "← Modules",
-    
-    // Equipment list page
+
     "equipment.list.new": "Nouvel Équipement",
     "equipment.list.newShort": "Nouveau",
     "equipment.list.filters": "Filtres et Recherche",
@@ -1055,8 +1077,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "equipment.list.year": "Année",
     "equipment.list.documents": "Documents",
     "equipment.list.events": "Événements",
-    
-    // PDF QR Code
+
     "pdf.qrCode.title": "Code QR de l'Équipement",
     "pdf.qrCode.equipmentInfo": "Informations de l'Équipement",
     "pdf.qrCode.license": "Plaque d'immatriculation",
@@ -1068,6 +1089,41 @@ export const translations: Record<Locale, Record<string, string>> = {
     "pdf.qrCode.generated": "Généré le",
     "pdf.qrCode.success": "Code QR téléchargé en PDF avec succès",
     "pdf.qrCode.error": "Erreur lors de la génération du PDF du code QR",
+
+    "audit.title": "Audit du Système",
+    "audit.description": "Enregistrement de toutes les actions effectuées dans le système",
+    "audit.history": "Historique des Actions",
+    "audit.noRecords": "Aucun enregistrement d'audit trouvé",
+    "audit.dateTime": "Date/Heure",
+    "audit.user": "Utilisateur",
+    "audit.action": "Action",
+    "audit.entity": "Entité",
+    "audit.details": "Détails",
+    "audit.ip": "IP",
+    "audit.actions.create": "Créer",
+    "audit.actions.update": "Mettre à jour",
+    "audit.actions.delete": "Supprimer",
+    "audit.actions.login": "Connexion",
+    "audit.actions.logout": "Déconnexion",
+    "audit.entities.equipment": "Équipement",
+    "audit.entities.document": "Document",
+    "audit.entities.event": "Événement",
+    "audit.entities.user": "Utilisateur",
+    "audit.id": "ID",
+    "audit.details.equipmentCreated": "Équipement créé: {details}",
+    "audit.details.equipmentUpdated": "Équipement mis à jour: {details}",
+    "audit.details.equipmentDeleted": "Équipement supprimé: {details}",
+    "audit.details.visibilityUpdated": "Visibilité publique mise à jour",
+    "audit.details.documentCreated": "Document créé: {details}",
+    "audit.details.documentUpdated": "Document mis à jour: {details}",
+    "audit.details.documentDeleted": "Document supprimé: {details}",
+    "audit.details.eventCreated": "Événement créé: {details}",
+    "audit.details.eventUpdated": "Événement mis à jour: {details}",
+    "audit.details.eventDeleted": "Événement supprimé: {details}",
+    "audit.details.userCreated": "Utilisateur créé: {details}",
+    "audit.details.userUpdated": "Utilisateur mis à jour: {details}",
+    "audit.details.userDeleted": "Utilisateur supprimé: {details}",
+    "audit.details.login": "Connexion effectuée: {details}",
   },
 }
 

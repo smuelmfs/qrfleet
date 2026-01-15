@@ -67,7 +67,7 @@ export default function ModulesPage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Módulo Equipamentos */}
+          {}
           <Card className="dark:bg-gray-800 hover:shadow-lg transition-shadow cursor-pointer group">
             <Link href="/module-equipament/admin">
               <CardHeader>
@@ -90,7 +90,7 @@ export default function ModulesPage() {
             </Link>
           </Card>
 
-          {/* Módulo People (RH) - Indisponível */}
+          {}
           <Card className="dark:bg-gray-800 opacity-50 cursor-not-allowed">
             <CardHeader>
               <div className="flex items-center justify-between">

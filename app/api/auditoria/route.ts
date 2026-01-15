@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: "desc",
       },
-      take: 500, // Reduzir para 500 registros mais recentes
+      take: 500,  
     })
 
     return NextResponse.json(auditoria)
@@ -59,7 +59,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email do usuário não encontrado" }, { status: 400 })
     }
 
-    // Buscar usuário por email
     const user = await prisma.user.findUnique({
       where: { email: userEmail },
     })

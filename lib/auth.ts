@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "./prisma"
 import bcrypt from "bcryptjs"
+import { createAuditLog } from "./audit"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -37,6 +38,14 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
+        await createAuditLog(
+          user.id,
+          "LOGIN",
+          "USUARIO",
+          user.id,
+          `Login realizado: ${user.email}`
+        )
+
         return {
           id: user.id,
           email: user.email,
@@ -51,7 +60,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // Primeiro login: copiar dados do user para o token
+
       if (user) {
         token.role = (user as any).role || "EDITOR"
         token.id = user.id
@@ -59,7 +68,6 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email
       }
 
-      // Atualização via useSession().update({ name: ... })
       if (trigger === "update" && session) {
         if (session.name) {
           token.name = session.name as string
@@ -72,12 +80,11 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      // Se não houver token de usuário, retornar sessão sem dados
+
       if (!token || !(token as any).id) {
         return session
       }
 
-      // Garantir que o utilizador ainda existe no banco
       const dbUser = await prisma.user.findUnique({
         where: { id: (token as any).id as string },
         select: {
@@ -88,19 +95,17 @@ export const authOptions: NextAuthOptions = {
         },
       })
 
-      // Se usuário não existe mais, retornar sessão sem dados do usuário
-      // As APIs vão verificar se session.user.id existe e bloquear se necessário
+
       if (!dbUser) {
         return session
       }
 
-      // Preencher a sessão apenas com o que é estritamente necessário no cliente
       session.user = {
         ...session.user,
         id: dbUser.id,
         name: dbUser.name || dbUser.email.split("@")[0],
         email: dbUser.email,
-        // Expor role apenas para controlar o que aparece na UI; a segurança real continua nas APIs/middleware
+
         role: dbUser.role,
       } as any
 

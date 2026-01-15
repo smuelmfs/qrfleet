@@ -66,7 +66,7 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-model Viatura {
+model Equipamento {
   id          String           @id @default(cuid())
   tipo        EquipamentoTipo  @default(VEICULO)
   matricula   String?          @unique
@@ -89,12 +89,12 @@ model Viatura {
   documentos  Documento[]
   eventos     Evento[]
 
-  @@map("viaturas")
+  @@map("equipamentos")
 }
 
 model Documento {
   id          String   @id @default(cuid())
-  viaturaId   String
+  equipamentoId   String
   titulo      String
   descricao   String?  @db.Text
   arquivo     String
@@ -103,9 +103,9 @@ model Documento {
   publico     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  viatura     Viatura  @relation(fields: [viaturaId], references: [id], onDelete: Cascade)
+  equipamento     Equipamento  @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
 
-  @@index([viaturaId])
+  @@index([equipamentoId])
   @@index([publico])
   @@index([createdAt])
   @@map("documentos")
@@ -113,7 +113,7 @@ model Documento {
 
 model Evento {
   id          String   @id @default(cuid())
-  viaturaId   String
+  equipamentoId   String
   titulo      String
   descricao   String?  @db.Text
   tipo        EventoTipo
@@ -122,9 +122,9 @@ model Evento {
   publico     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  viatura     Viatura  @relation(fields: [viaturaId], references: [id], onDelete: Cascade)
+  equipamento     Equipamento  @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
 
-  @@index([viaturaId])
+  @@index([equipamentoId])
   @@index([publico])
   @@index([data])
   @@map("eventos")

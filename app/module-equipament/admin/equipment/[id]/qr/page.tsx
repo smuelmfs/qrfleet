@@ -8,11 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Download, ArrowLeft } from "lucide-react"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { useI18n } from "@/contexts/I18nContext"
 import jsPDF from "jspdf"
 
 export default function QRCodePage() {
   const params = useParams()
   const router = useRouter()
+  const { t } = useI18n()
   const [qrCode, setQrCode] = useState<string | null>(null)
   const [equipamento, setEquipamento] = useState<{
     tipo: string
@@ -23,9 +25,9 @@ export default function QRCodePage() {
   } | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchViatura = useCallback(async () => {
+  const fetchEquipamento = useCallback(async () => {
     try {
-      const res = await fetch(`/api/viaturas/${params.id}`)
+      const res = await fetch(`/api/equipamentos/${params.id}`)
       if (res.ok) {
         const data = await res.json()
         setQrCode(data.qrCode)
@@ -45,8 +47,8 @@ export default function QRCodePage() {
   }, [params.id])
 
   useEffect(() => {
-    fetchViatura()
-  }, [fetchViatura])
+    fetchEquipamento()
+  }, [fetchEquipamento])
 
   const handleDownload = () => {
     if (!qrCode || !equipamento) return
@@ -56,29 +58,25 @@ export default function QRCodePage() {
       : equipamento.parque
 
     const label = equipamento.tipo === "VEICULO" 
-      ? "Matrícula" 
-      : "Parque"
+      ? t("pdf.qrCode.license")
+      : t("pdf.qrCode.park")
 
     try {
-      // Criar novo documento PDF (A4: 210x297mm)
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
       })
 
-      // Configurações
       const pageWidth = 210
       const pageHeight = 297
       const margin = 20
-      const qrSize = 80 // Tamanho do QR code em mm
-      const qrX = (pageWidth - qrSize) / 2 // Centralizar horizontalmente
-      const qrY = (pageHeight - qrSize) / 2 - 20 // Centralizar verticalmente com espaço para texto
+      const qrSize = 80 
+      const qrX = (pageWidth - qrSize) / 2 
+      const qrY = (pageHeight - qrSize) / 2 - 20
 
-      // Adicionar QR Code
       pdf.addImage(qrCode, "PNG", qrX, qrY, qrSize, qrSize)
 
-      // Adicionar informação do identificador abaixo do QR code
       const textY = qrY + qrSize + 15
       pdf.setFontSize(16)
       pdf.setFont("helvetica", "bold")
@@ -86,7 +84,6 @@ export default function QRCodePage() {
         align: "center",
       })
 
-      // Salvar PDF
       pdf.save(`QRCode-${identificador}.pdf`)
     } catch (error) {
       console.error("Erro ao gerar PDF:", error)
@@ -102,12 +99,12 @@ export default function QRCodePage() {
       <div className="max-w-md mx-auto py-8 px-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            QR Code não encontrado
+            {t("equipment.list.qrNotAvailable")}
           </p>
           <Link href={`/module-equipament/admin/equipment/${params.id}`}>
             <Button variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar
+              {t("common.back")}
             </Button>
           </Link>
         </div>
@@ -125,14 +122,14 @@ export default function QRCodePage() {
         <Link href={`/module-equipament/admin/equipment/${params.id}`}>
           <Button variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            {t("common.back")}
           </Button>
         </Link>
 
         <Card className="shadow-lg dark:bg-gray-800">
           <CardHeader>
             <CardTitle className="text-center">
-              QR Code
+              {t("pdf.qrCode.title")}
             </CardTitle>
             <div className="text-center mt-2">
               <p className="text-lg font-semibold dark:text-white">
@@ -140,8 +137,8 @@ export default function QRCodePage() {
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {equipamento.tipo === "VEICULO" 
-                  ? `Matrícula: ${equipamento.matricula}`
-                  : `Parque: ${equipamento.parque}`}
+                  ? `${t("pdf.qrCode.license")}: ${equipamento.matricula}`
+                  : `${t("pdf.qrCode.park")}: ${equipamento.parque}`}
               </p>
             </div>
           </CardHeader>
@@ -156,7 +153,7 @@ export default function QRCodePage() {
             </div>
             <Button onClick={handleDownload} size="lg" className="w-full">
               <Download className="mr-2 h-4 w-4" />
-              Download QR Code
+              {t("equipment.list.downloadQR")}
             </Button>
           </CardContent>
         </Card>

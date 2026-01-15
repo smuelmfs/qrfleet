@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs"
 const prisma = new PrismaClient()
 
 async function main() {
-  // Pegar argumentos da linha de comando
+
   const args = process.argv.slice(2)
   
   if (args.length < 3) {
@@ -23,26 +23,23 @@ async function main() {
   const role = args[2].toUpperCase() as "ADMIN" | "EDITOR"
   const name = args[3] || null
 
-  // Validar role
   if (role !== "ADMIN" && role !== "EDITOR") {
     console.log("❌ Role inválido. Use ADMIN ou EDITOR")
     process.exit(1)
   }
 
-  // Validar email
   if (!email.includes("@")) {
     console.log("❌ Email inválido")
     process.exit(1)
   }
 
-  // Validar senha
   if (password.length < 6) {
     console.log("❌ Senha deve ter pelo menos 6 caracteres")
     process.exit(1)
   }
 
   try {
-    // Verificar se o email já existe
+
     const existing = await prisma.user.findUnique({
       where: { email },
     })
@@ -52,10 +49,8 @@ async function main() {
       process.exit(1)
     }
 
-    // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Criar usuário
     const user = await prisma.user.create({
       data: {
         email,

@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const viaturaId = searchParams.get("viaturaId")
+    const equipamentoId = searchParams.get("equipamentoId")
 
     const eventos = await prisma.evento.findMany({
-      where: viaturaId ? { viaturaId } : undefined,
+      where: equipamentoId ? { equipamentoId } : undefined,
       select: {
         id: true,
-        viaturaId: true,
+        equipamentoId: true,
         titulo: true,
         descricao: true,
         tipo: true,
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
         publico: true,
         createdAt: true,
         updatedAt: true,
-        viatura: {
+        equipamento: {
           select: {
             matricula: true,
             parque: true,
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         data: "desc",
       },
-      take: 500, // Limitar resultados
+      take: 500, 
     })
 
     return NextResponse.json(eventos)
@@ -53,11 +54,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { viaturaId, titulo, descricao, tipo, data, custo, publico } = body
+    const { equipamentoId, titulo, descricao, tipo, data, custo, publico } = body
 
     const evento = await prisma.evento.create({
       data: {
-        viaturaId,
+        equipamentoId,
         titulo,
         descricao,
         tipo,
@@ -66,6 +67,16 @@ export async function POST(request: NextRequest) {
         publico: publico !== undefined ? publico : false,
       },
     })
+
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "CREATE",
+      "EVENTO",
+      evento.id,
+      `Evento criado: ${titulo} (${tipo})`,
+      request
+    )
 
     return NextResponse.json(evento)
   } catch (error) {

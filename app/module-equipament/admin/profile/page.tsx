@@ -26,7 +26,7 @@ export default function PerfilPage() {
 
   useEffect(() => {
     if (user) {
-      // Se não houver nome, usar primeira parte do email
+
       const defaultName = user.name || user.email.split("@")[0]
       setFormData({
         name: defaultName,
@@ -47,7 +47,6 @@ export default function PerfilPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validar senha se foi preenchida
     if (formData.newPassword || formData.confirmPassword) {
       if (!formData.newPassword || !formData.confirmPassword) {
         toast({
@@ -83,7 +82,6 @@ export default function PerfilPage() {
         name: formData.name,
       }
 
-      // Só atualizar senha se foi preenchida
       if (formData.newPassword) {
         updateData.password = formData.newPassword
       }
@@ -106,7 +104,7 @@ export default function PerfilPage() {
           newPassword: "",
           confirmPassword: "",
         }))
-        // Atualizar sessão para refletir mudanças de nome no layout/navbar
+
         if (update) {
           await update({ name: formData.name })
         }

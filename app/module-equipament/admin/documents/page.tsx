@@ -32,8 +32,8 @@ interface Documento {
   arquivo: string
   tipo: string
   dataVencimento?: string
-  viaturaId: string
-  viatura?: {
+  equipamentoId: string
+  equipamento?: {
     tipo: string
     matricula?: string
     parque?: string
@@ -41,7 +41,7 @@ interface Documento {
   }
 }
 
-interface Viatura {
+interface Equipamento {
   id: string
   tipo: string
   matricula?: string
@@ -52,13 +52,13 @@ interface Viatura {
 export default function DocumentosPage() {
   const { t } = useI18n()
   const [documentos, setDocumentos] = useState<Documento[]>([])
-  const [viaturas, setViaturas] = useState<Viatura[]>([])
+  const [equipamentos, setEquipamentos] = useState<Equipamento[]>([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
-  const [filterViatura, setFilterViatura] = useState<string>("all")
+  const [filterEquipamento, setFilterEquipamento] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [groupByViatura, setGroupByViatura] = useState<boolean>(false)
+  const [groupByEquipamento, setGroupByEquipamento] = useState<boolean>(false)
 
   const fetchDocumentos = useCallback(async () => {
     try {
@@ -76,53 +76,51 @@ export default function DocumentosPage() {
     }
   }, [toast])
 
-  const fetchViaturas = useCallback(async () => {
+  const fetchEquipamentos = useCallback(async () => {
     try {
-      const res = await fetch("/api/viaturas")
+      const res = await fetch("/api/equipamentos")
       if (!res.ok) {
         throw new Error("Erro ao buscar equipamentos")
       }
       const data = await res.json()
-      // Garantir que data seja sempre um array
-      setViaturas(Array.isArray(data) ? data : [])
+
+      setEquipamentos(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Erro ao carregar equipamentos:", error)
-      setViaturas([]) // Garantir que seja um array mesmo em caso de erro
+      setEquipamentos([]) 
     }
   }, [])
 
   useEffect(() => {
     fetchDocumentos()
-    fetchViaturas()
-  }, [fetchDocumentos, fetchViaturas])
+    fetchEquipamentos()
+  }, [fetchDocumentos, fetchEquipamentos])
 
-  // Filtrar documentos
   const filteredDocumentos = documentos.filter((doc) => {
-    const matchesViatura = filterViatura === "all" || doc.viaturaId === filterViatura
+    const matchesEquipamento = filterEquipamento === "all" || doc.equipamentoId === filterEquipamento
     const matchesSearch =
       searchTerm === "" ||
       doc.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.descricao?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (doc.viatura?.matricula?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      (doc.viatura?.parque?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      doc.viatura?.modelo.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesViatura && matchesSearch
+      (doc.equipamento?.matricula?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      (doc.equipamento?.parque?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      doc.equipamento?.modelo.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesEquipamento && matchesSearch
   })
 
-  // Agrupar por viatura
-  const groupedDocumentos = groupByViatura
+  const groupedDocumentos = groupByEquipamento
     ? filteredDocumentos.reduce((acc, doc) => {
-        const key = doc.viaturaId || "sem-viatura"
+        const key = doc.equipamentoId || "sem-equipamento"
         if (!acc[key]) {
           acc[key] = {
-            viatura: doc.viatura || { tipo: "VEICULO", matricula: "Sem equipamento", modelo: "" },
+            equipamento: doc.equipamento || { tipo: "VEICULO", matricula: "Sem equipamento", modelo: "" },
             documentos: [],
           }
         }
         acc[key].documentos.push(doc)
         return acc
-      }, {} as Record<string, { viatura: { tipo: string; matricula?: string; parque?: string; modelo: string }; documentos: Documento[] }>)
+      }, {} as Record<string, { equipamento: { tipo: string; matricula?: string; parque?: string; modelo: string }; documentos: Documento[] }>)
     : null
 
   if (loading) return <LoadingSpinner />
@@ -138,7 +136,7 @@ export default function DocumentosPage() {
         </div>
       </div>
 
-      {/* Filtros */}
+      {}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -168,21 +166,21 @@ export default function DocumentosPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="filter-viatura" className="flex items-center gap-2">
+            <Label htmlFor="filter-equipamento" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               {t("common.filter")} {t("events.vehicle")}
             </Label>
-            <Select value={filterViatura} onValueChange={setFilterViatura}>
-              <SelectTrigger id="filter-viatura">
+            <Select value={filterEquipamento} onValueChange={setFilterEquipamento}>
+              <SelectTrigger id="filter-equipamento">
                 <SelectValue placeholder={t("form.allVehicles")} />
               </SelectTrigger>
                 <SelectContent>
                 <SelectItem value="all">{t("form.allVehicles")}</SelectItem>
-                {Array.isArray(viaturas) && viaturas.map((viatura) => (
-                  <SelectItem key={viatura.id} value={viatura.id}>
-                    {viatura.tipo === "VEICULO" 
-                      ? (viatura.matricula || "N/A")
-                      : (viatura.parque || "N/A")} - {viatura.modelo}
+                {Array.isArray(equipamentos) && equipamentos.map((equipamento) => (
+                  <SelectItem key={equipamento.id} value={equipamento.id}>
+                    {equipamento.tipo === "VEICULO" 
+                      ? (equipamento.matricula || "N/A")
+                      : (equipamento.parque || "N/A")} - {equipamento.modelo}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -194,16 +192,16 @@ export default function DocumentosPage() {
             {t("form.showing")} {filteredDocumentos.length} {t("form.of")} {documentos.length} {t("form.document")}
           </div>
           <Button
-            variant={groupByViatura ? "default" : "outline"}
+            variant={groupByEquipamento ? "default" : "outline"}
             size="sm"
-            onClick={() => setGroupByViatura(!groupByViatura)}
+            onClick={() => setGroupByEquipamento(!groupByEquipamento)}
           >
-            {groupByViatura ? t("events.normalView") : t("events.groupByVehicle")}
+            {groupByEquipamento ? t("events.normalView") : t("events.groupByVehicle")}
           </Button>
         </div>
       </div>
 
-      {/* Mobile Cards View */}
+      {}
       <div className="block sm:hidden space-y-4">
         {filteredDocumentos.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
@@ -211,14 +209,14 @@ export default function DocumentosPage() {
               ? t("documents.noDocuments")
               : t("common.noResults")}
           </div>
-        ) : groupByViatura && groupedDocumentos ? (
-          Object.entries(groupedDocumentos).map(([viaturaId, group]) => (
-            <div key={viaturaId} className="space-y-3">
+        ) : groupByEquipamento && groupedDocumentos ? (
+          Object.entries(groupedDocumentos).map(([equipamentoId, group]) => (
+            <div key={equipamentoId} className="space-y-3">
               <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-400 p-3 rounded">
                 <h3 className="font-bold text-lg dark:text-white">
-                  {group.viatura.tipo === "VEICULO" 
-                    ? (group.viatura.matricula || "N/A")
-                    : (group.viatura.parque || "N/A")} - {group.viatura.modelo}
+                  {group.equipamento.tipo === "VEICULO" 
+                    ? (group.equipamento.matricula || "N/A")
+                    : (group.equipamento.parque || "N/A")} - {group.equipamento.modelo}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {group.documentos.length} documento(s)
@@ -238,7 +236,7 @@ export default function DocumentosPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Link href={`/module-equipament/admin/equipment/${documento.viaturaId}?tab=documents`} className="flex-1">
+                    <Link href={`/module-equipament/admin/equipment/${documento.equipamentoId}?tab=documents`} className="flex-1">
                       <Button
                         variant="outline"
                         size="sm"
@@ -259,10 +257,10 @@ export default function DocumentosPage() {
               <div className="mb-3">
                 <h3 className="font-semibold text-lg dark:text-white">{documento.titulo}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {documento.viatura
-                    ? `${documento.viatura.tipo === "VEICULO" 
-                        ? (documento.viatura.matricula || "N/A")
-                        : (documento.viatura.parque || "N/A")} - ${documento.viatura.modelo}`
+                  {documento.equipamento
+                    ? `${documento.equipamento.tipo === "VEICULO" 
+                        ? (documento.equipamento.matricula || "N/A")
+                        : (documento.equipamento.parque || "N/A")} - ${documento.equipamento.modelo}`
                     : "-"}
                 </p>
                 <div className="flex gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -275,7 +273,7 @@ export default function DocumentosPage() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Link href={`/module-equipament/admin/equipment/${documento.viaturaId}?tab=documents`} className="flex-1">
+                <Link href={`/module-equipament/admin/equipment/${documento.equipamentoId}?tab=documents`} className="flex-1">
                   <Button
                     variant="outline"
                     size="sm"
@@ -291,16 +289,16 @@ export default function DocumentosPage() {
         )}
       </div>
 
-      {/* Desktop Table View */}
+      {}
       <div className="hidden sm:block space-y-4">
-        {groupByViatura && groupedDocumentos ? (
-          Object.entries(groupedDocumentos).map(([viaturaId, group]) => (
-            <div key={viaturaId} className="bg-white rounded-lg shadow overflow-x-auto">
+        {groupByEquipamento && groupedDocumentos ? (
+          Object.entries(groupedDocumentos).map(([equipamentoId, group]) => (
+            <div key={equipamentoId} className="bg-white rounded-lg shadow overflow-x-auto">
               <div className="bg-blue-50 border-b p-3">
                 <h3 className="font-bold text-lg">
-                  {group.viatura.tipo === "VEICULO" 
-                    ? (group.viatura.matricula || "N/A")
-                    : (group.viatura.parque || "N/A")} - {group.viatura.modelo}
+                  {group.equipamento.tipo === "VEICULO" 
+                    ? (group.equipamento.matricula || "N/A")
+                    : (group.equipamento.parque || "N/A")} - {group.equipamento.modelo}
                 </h3>
                 <p className="text-sm text-gray-600">
                   {group.documentos.length} documento(s)
@@ -327,7 +325,7 @@ export default function DocumentosPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Link href={`/module-equipament/admin/equipment/${documento.viaturaId}?tab=documents`}>
+                          <Link href={`/module-equipament/admin/equipment/${documento.equipamentoId}?tab=documents`}>
                             <Button
                               variant="outline"
                               size="icon"
@@ -348,11 +346,11 @@ export default function DocumentosPage() {
             <Table>
               <TableHeader>
                 <TableRow className="dark:border-gray-700">
-                  <TableHead className="dark:text-gray-300">Título</TableHead>
+                  <TableHead className="dark:text-gray-300">{t("documents.titleField")}</TableHead>
                   <TableHead className="dark:text-gray-300">{t("events.vehicle")}</TableHead>
-                  <TableHead className="dark:text-gray-300">Tipo</TableHead>
-                  <TableHead className="dark:text-gray-300">Data Vencimento</TableHead>
-                  <TableHead className="dark:text-gray-300">Ações</TableHead>
+                  <TableHead className="dark:text-gray-300">{t("documents.type")}</TableHead>
+                  <TableHead className="dark:text-gray-300">{t("documents.expiration")}</TableHead>
+                  <TableHead className="dark:text-gray-300">{t("common.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -369,10 +367,10 @@ export default function DocumentosPage() {
                     <TableRow key={documento.id} className="dark:border-gray-700">
                       <TableCell className="dark:text-gray-300">{documento.titulo}</TableCell>
                       <TableCell className="dark:text-gray-300">
-                        {documento.viatura
-                          ? `${documento.viatura.tipo === "VEICULO" 
-                              ? (documento.viatura.matricula || "N/A")
-                              : (documento.viatura.parque || "N/A")} - ${documento.viatura.modelo}`
+                        {documento.equipamento
+                          ? `${documento.equipamento.tipo === "VEICULO" 
+                              ? (documento.equipamento.matricula || "N/A")
+                              : (documento.equipamento.parque || "N/A")} - ${documento.equipamento.modelo}`
                           : "-"}
                       </TableCell>
                       <TableCell className="dark:text-gray-300">{documento.tipo}</TableCell>
@@ -385,7 +383,7 @@ export default function DocumentosPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Link href={`/module-equipament/admin/equipment/${documento.viaturaId}?tab=documents`}>
+                          <Link href={`/module-equipament/admin/equipment/${documento.equipamentoId}?tab=documents`}>
                             <Button
                               variant="outline"
                               size="icon"

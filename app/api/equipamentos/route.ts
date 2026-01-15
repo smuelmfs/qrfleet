@@ -3,11 +3,11 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { generateQRCode } from "@/lib/qrcode"
+import { createAuditLog } from "@/lib/audit"
 
 export async function GET() {
   try {
-    // Buscar apenas campos necessários para listagem (sem documentos e eventos)
-    const viaturas = await prisma.viatura.findMany({
+    const equipamentos = await prisma.equipamento.findMany({
       select: {
         id: true,
         tipo: true,
@@ -22,7 +22,6 @@ export async function GET() {
         qrCode: true,
         createdAt: true,
         updatedAt: true,
-        // Contar documentos e eventos ao invés de buscar todos
         _count: {
           select: {
             documentos: true,
@@ -34,10 +33,10 @@ export async function GET() {
         createdAt: "desc",
       },
     })
-    return NextResponse.json(viaturas)
+    return NextResponse.json(equipamentos)
   } catch (error) {
     return NextResponse.json(
-      { error: "Erro ao buscar viaturas" },
+      { error: "Erro ao buscar equipamentos" },
       { status: 500 }
     )
   }
@@ -53,7 +52,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { tipo, matricula, parque, peso, modelo, marca, ano, foto, descricao } = body
 
-    // Validar tipo
     if (tipo === "VEICULO" && !matricula) {
       return NextResponse.json(
         { error: "Matrícula é obrigatória para veículos" },
@@ -68,9 +66,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se a matrícula ou parque já existe
     if (tipo === "VEICULO" && matricula) {
-      const existing = await prisma.viatura.findUnique({
+      const existing = await prisma.equipamento.findUnique({
         where: { matricula },
       })
 
@@ -83,7 +80,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (tipo === "MAQUINA" && parque) {
-      const existing = await prisma.viatura.findFirst({
+      const existing = await prisma.equipamento.findFirst({
         where: { parque },
       })
 
@@ -95,7 +92,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Gerar QR Code para veículos e máquinas
     let qrCodeDataUrl: string | null = null
     if (tipo === "VEICULO" && matricula) {
       const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${matricula}`
@@ -105,7 +101,7 @@ export async function POST(request: NextRequest) {
       qrCodeDataUrl = await generateQRCode(publicUrl)
     }
 
-    const viatura = await prisma.viatura.create({
+    const equipamento = await prisma.equipamento.create({
       data: {
         tipo: tipo || "VEICULO",
         matricula: tipo === "VEICULO" ? matricula : null,
@@ -120,11 +116,21 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json(viatura)
+    const user = session.user as any
+    await createAuditLog(
+      user.id,
+      "CREATE",
+      "EQUIPAMENTO",
+      equipamento.id,
+      `Equipamento criado: ${tipo === "VEICULO" ? matricula : parque} - ${marca} ${modelo}`,
+      request
+    )
+
+    return NextResponse.json(equipamento)
   } catch (error) {
     console.error(error)
     return NextResponse.json(
-      { error: "Erro ao criar viatura" },
+      { error: "Erro ao criar equipamento" },
       { status: 500 }
     )
   }

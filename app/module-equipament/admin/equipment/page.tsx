@@ -36,7 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-interface Viatura {
+interface Equipamento {
   id: string
   tipo: string
   matricula?: string
@@ -54,11 +54,11 @@ interface Viatura {
   }
 }
 
-export default function ViaturasPage() {
-  const [viaturas, setViaturas] = useState<Viatura[]>([])
+export default function EquipamentosPage() {
+  const [equipamentos, setEquipamentos] = useState<Equipamento[]>([])
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false)
-  const [editing, setEditing] = useState<Viatura | null>(null)
+  const [editing, setEditing] = useState<Equipamento | null>(null)
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
@@ -76,32 +76,31 @@ export default function ViaturasPage() {
   const [preview, setPreview] = useState<string>("")
   const { t } = useI18n()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deleteTarget, setDeleteTarget] = useState<Viatura | null>(null)
-  
-  // Filtros
+  const [deleteTarget, setDeleteTarget] = useState<Equipamento | null>(null)
+
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [filterTipo, setFilterTipo] = useState<string>("all")
   const [filterMarca, setFilterMarca] = useState<string>("all")
   const [filterModelo, setFilterModelo] = useState<string>("all")
   const [filterAno, setFilterAno] = useState<string>("all")
 
-  const fetchViaturas = useCallback(async () => {
+  const fetchEquipamentos = useCallback(async () => {
     try {
-      const res = await fetch("/api/viaturas")
+      const res = await fetch("/api/equipamentos")
       if (!res.ok) {
         throw new Error("Erro ao buscar equipamentos")
       }
       const data = await res.json()
-      // Garantir que data seja sempre um array
-      // Se a resposta contém um erro, retornar array vazio
+
+
       if (data.error) {
         console.error("Erro da API:", data.error)
-        setViaturas([])
+        setEquipamentos([])
         return
       }
-      const viaturasArray = Array.isArray(data) ? data : []
-      console.log("Equipamentos carregados:", viaturasArray.length, viaturasArray)
-      setViaturas(viaturasArray)
+      const equipamentosArray = Array.isArray(data) ? data : []
+      console.log("Equipamentos carregados:", equipamentosArray.length, equipamentosArray)
+      setEquipamentos(equipamentosArray)
     } catch (error) {
       console.error("Erro ao carregar equipamentos:", error)
       toast({
@@ -109,20 +108,20 @@ export default function ViaturasPage() {
         description: t("vehicles.noVehicles"),
         variant: "destructive",
       })
-      setViaturas([]) // Garantir que seja um array mesmo em caso de erro
+        setEquipamentos([]) 
     } finally {
       setLoading(false)
     }
   }, [toast, t])
 
   useEffect(() => {
-    fetchViaturas()
-  }, [fetchViaturas])
+    fetchEquipamentos()
+  }, [fetchEquipamentos])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // Validar tamanho (3MB)
+
       if (file.size > 3 * 1024 * 1024) {
         toast({
           title: "Erro",
@@ -131,7 +130,7 @@ export default function ViaturasPage() {
         })
         return
       }
-      // Validar tipo
+
       if (!file.type.startsWith("image/")) {
         toast({
           title: "Erro",
@@ -141,7 +140,7 @@ export default function ViaturasPage() {
         return
       }
       setSelectedFile(file)
-      // Criar preview
+
       const reader = new FileReader()
       reader.onloadend = () => {
         setPreview(reader.result as string)
@@ -155,7 +154,6 @@ export default function ViaturasPage() {
     try {
       let fotoUrl = formData.foto
 
-      // Se houver arquivo selecionado, fazer upload primeiro
       if (selectedFile) {
         setUploading(true)
         const uploadFormData = new FormData()
@@ -182,7 +180,7 @@ export default function ViaturasPage() {
         setUploading(false)
       }
 
-      const url = editing ? `/api/viaturas/${editing.id}` : "/api/viaturas"
+      const url = editing ? `/api/equipamentos/${editing.id}` : "/api/equipamentos"
       const method = editing ? "PUT" : "POST"
 
       const res = await fetch(url, {
@@ -212,38 +210,38 @@ export default function ViaturasPage() {
         })
         setSelectedFile(null)
         setPreview("")
-        fetchViaturas()
+        fetchEquipamentos()
       } else {
         const error = await res.json()
         toast({
           title: "Erro",
-          description: error.error || "Erro ao salvar viatura",
+          description: error.error || "Erro ao salvar equipamento",
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Erro ao salvar viatura",
+        description: "Erro ao salvar equipamento",
         variant: "destructive",
       })
     }
   }
 
-  const handleEdit = (viatura: Viatura) => {
-    // Redirecionar para página de detalhes ao invés de editar inline
-    window.location.href = `/module-equipament/admin/equipment/${viatura.id}`
+  const handleEdit = (equipamento: Equipamento) => {
+
+    window.location.href = `/module-equipament/admin/equipment/${equipamento.id}`
   }
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/viaturas/${id}`, { method: "DELETE" })
+      const res = await fetch(`/api/equipamentos/${id}`, { method: "DELETE" })
       if (res.ok) {
         toast({
           title: "Sucesso",
           description: "Equipamento deletado com sucesso",
         })
-        fetchViaturas()
+        fetchEquipamentos()
       } else {
         toast({
           title: "Erro",
@@ -260,8 +258,8 @@ export default function ViaturasPage() {
     }
   }
 
-  const handleDownloadQRCodePDF = async (viatura: Viatura) => {
-    if (!viatura.qrCode) {
+  const handleDownloadQRCodePDF = async (equipamento: Equipamento) => {
+    if (!equipamento.qrCode) {
       toast({
         title: t("common.error"),
         description: t("equipment.list.qrNotAvailable"),
@@ -271,32 +269,28 @@ export default function ViaturasPage() {
     }
 
     try {
-      // Criar novo documento PDF (A4: 210x297mm)
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
       })
 
-      // Configurações
       const pageWidth = 210
       const pageHeight = 297
       const margin = 20
-      const qrSize = 80 // Tamanho do QR code em mm
-      const qrX = (pageWidth - qrSize) / 2 // Centralizar horizontalmente
+      const qrSize = 80 
+      const qrX = (pageWidth - qrSize) / 2 
       const qrY = margin + 30
 
-      // Título
       pdf.setFontSize(20)
       pdf.setFont("helvetica", "bold")
-      pdf.text("QR Code do Equipamento", pageWidth / 2, margin + 15, {
+      pdf.text(t("pdf.qrCode.title"), pageWidth / 2, margin + 15, {
         align: "center",
       })
 
-      // Adicionar QR Code
-      pdf.addImage(viatura.qrCode, "PNG", qrX, qrY, qrSize, qrSize)
+      pdf.addImage(equipamento.qrCode, "PNG", qrX, qrY, qrSize, qrSize)
 
-      // Informações do equipamento
       const infoY = qrY + qrSize + 20
       pdf.setFontSize(14)
       pdf.setFont("helvetica", "bold")
@@ -306,29 +300,28 @@ export default function ViaturasPage() {
 
       pdf.setFontSize(12)
       pdf.setFont("helvetica", "normal")
-      const identificador = viatura.tipo === "VEICULO" 
-        ? `${t("pdf.qrCode.license")}: ${viatura.matricula}`
-        : `${t("pdf.qrCode.park")}: ${viatura.parque}`
+      const identificador = equipamento.tipo === "VEICULO" 
+        ? `${t("pdf.qrCode.license")}: ${equipamento.matricula}`
+        : `${t("pdf.qrCode.park")}: ${equipamento.parque}`
       pdf.text(identificador, pageWidth / 2, infoY + 10, {
         align: "center",
       })
       pdf.text(
-        `${t("pdf.qrCode.brand")}: ${viatura.marca}`,
+        `${t("pdf.qrCode.brand")}: ${equipamento.marca}`,
         pageWidth / 2,
         infoY + 16,
         { align: "center" }
       )
       pdf.text(
-        `${t("pdf.qrCode.model")}: ${viatura.modelo}`,
+        `${t("pdf.qrCode.model")}: ${equipamento.modelo}`,
         pageWidth / 2,
         infoY + 22,
         { align: "center" }
       )
-      pdf.text(`${t("pdf.qrCode.year")}: ${viatura.ano}`, pageWidth / 2, infoY + 28, {
+      pdf.text(`${t("pdf.qrCode.year")}: ${equipamento.ano}`, pageWidth / 2, infoY + 28, {
         align: "center",
       })
 
-      // Instruções
       const instructionsY = infoY + 40
       pdf.setFontSize(10)
       pdf.setFont("helvetica", "italic")
@@ -339,7 +332,6 @@ export default function ViaturasPage() {
         { align: "center" }
       )
 
-      // Rodapé
       pdf.setFontSize(8)
       pdf.setFont("helvetica", "normal")
       pdf.text(
@@ -349,10 +341,9 @@ export default function ViaturasPage() {
         { align: "center" }
       )
 
-      // Salvar PDF
-      const nomeArquivo = viatura.tipo === "VEICULO" 
-        ? viatura.matricula 
-        : viatura.parque
+      const nomeArquivo = equipamento.tipo === "VEICULO" 
+        ? equipamento.matricula 
+        : equipamento.parque
       pdf.save(`QRCode-${nomeArquivo}.pdf`)
 
       toast({
@@ -369,28 +360,27 @@ export default function ViaturasPage() {
     }
   }
 
-  // Filtrar viaturas
-  console.log("Viaturas antes do filter:", viaturas, "É array?", Array.isArray(viaturas))
-  const filteredViaturas = Array.isArray(viaturas) ? viaturas.filter((viatura) => {
-    const identificador = viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque
+  console.log("Equipamentos antes do filter:", equipamentos, "É array?", Array.isArray(equipamentos))
+  const filteredEquipamentos = Array.isArray(equipamentos) ? equipamentos.filter((equipamento) => {
+    const identificador = equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque
     const matchesSearch =
       searchTerm === "" ||
       identificador?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      viatura.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      viatura.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      viatura.ano.toString().includes(searchTerm) ||
-      (viatura.descricao?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
+      equipamento.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipamento.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipamento.ano.toString().includes(searchTerm) ||
+      (equipamento.descricao?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
     
-    const matchesTipo = filterTipo === "all" || viatura.tipo === filterTipo
-    const matchesMarca = filterMarca === "all" || viatura.marca === filterMarca
-    const matchesModelo = filterModelo === "all" || viatura.modelo === filterModelo
-    const matchesAno = filterAno === "all" || viatura.ano.toString() === filterAno
+    const matchesTipo = filterTipo === "all" || equipamento.tipo === filterTipo
+    const matchesMarca = filterMarca === "all" || equipamento.marca === filterMarca
+    const matchesModelo = filterModelo === "all" || equipamento.modelo === filterModelo
+    const matchesAno = filterAno === "all" || equipamento.ano.toString() === filterAno
     
     return matchesSearch && matchesTipo && matchesMarca && matchesModelo && matchesAno
   }) : []
   
   console.log("Filtros ativos:", { filterTipo, filterMarca, filterModelo, filterAno, searchTerm })
-  console.log("Equipamentos filtrados:", filteredViaturas.length)
+  console.log("Equipamentos filtrados:", filteredEquipamentos.length)
 
   const hasActiveFilters = filterTipo !== "all" || filterMarca !== "all" || filterModelo !== "all" || filterAno !== "all" || searchTerm !== ""
 
@@ -402,10 +392,9 @@ export default function ViaturasPage() {
     setFilterAno("all")
   }
 
-  // Obter valores únicos para filtros
-  const marcas = Array.isArray(viaturas) ? Array.from(new Set(viaturas.map((v) => v.marca))).sort() : []
-  const modelos = Array.isArray(viaturas) ? Array.from(new Set(viaturas.map((v) => v.modelo))).sort() : []
-  const anos = Array.isArray(viaturas) ? Array.from(new Set(viaturas.map((v) => v.ano))).sort((a, b) => b - a) : []
+  const marcas = Array.isArray(equipamentos) ? Array.from(new Set(equipamentos.map((e) => e.marca))).sort() : []
+  const modelos = Array.isArray(equipamentos) ? Array.from(new Set(equipamentos.map((e) => e.modelo))).sort() : []
+  const anos = Array.isArray(equipamentos) ? Array.from(new Set(equipamentos.map((e) => e.ano))).sort((a, b) => b - a) : []
 
   if (loading) return <LoadingSpinner />
 
@@ -422,7 +411,7 @@ export default function ViaturasPage() {
         </Link>
       </div>
 
-      {/* Filtros */}
+      {}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-base font-semibold flex items-center gap-2">
@@ -522,7 +511,7 @@ export default function ViaturasPage() {
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-3 pt-3 border-t dark:border-gray-700">
           <div className="text-xs text-gray-600 dark:text-gray-400">
-            <span className="font-semibold">{filteredViaturas.length}</span> {t("form.of")} <span className="font-semibold">{Array.isArray(viaturas) ? viaturas.length : 0}</span> {t("equipment.list.count")}
+            <span className="font-semibold">{filteredEquipamentos.length}</span> {t("form.of")} <span className="font-semibold">{Array.isArray(equipamentos) ? equipamentos.length : 0}</span> {t("equipment.list.count")}
             {hasActiveFilters && (
               <span className="ml-2 text-blue-600 dark:text-blue-400">
                 {t("equipment.list.activeFilters")}
@@ -553,7 +542,7 @@ export default function ViaturasPage() {
               )}
               {searchTerm && (
                 <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded text-xs">
-                  "{searchTerm}"
+                  &quot;{searchTerm}&quot;
                 </span>
               )}
             </div>
@@ -561,21 +550,21 @@ export default function ViaturasPage() {
         </div>
       </div>
 
-      {/* Mobile Cards View */}
+      {}
   <div className="block sm:hidden space-y-4">
-        {filteredViaturas.length === 0 ? (
+        {filteredEquipamentos.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
-            {Array.isArray(viaturas) && viaturas.length === 0 ? t("vehicles.noVehicles") : t("common.noResults")}
+            {Array.isArray(equipamentos) && equipamentos.length === 0 ? t("vehicles.noVehicles") : t("common.noResults")}
           </div>
         ) : (
-          filteredViaturas.map((viatura) => (
-            <div key={viatura.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          filteredEquipamentos.map((equipamento) => (
+            <div key={equipamento.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
               <div className="flex gap-4 mb-3">
-                {viatura.foto ? (
+                {equipamento.foto ? (
                   <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 flex-shrink-0">
                     <img
-                      src={viatura.foto}
-                      alt={viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque}
+                      src={equipamento.foto}
+                      alt={equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -586,25 +575,25 @@ export default function ViaturasPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    {viatura.tipo === "VEICULO" ? (
+                    {equipamento.tipo === "VEICULO" ? (
                       <Car className="h-4 w-4 text-blue-600 flex-shrink-0" />
                     ) : (
                       <Wrench className="h-4 w-4 text-orange-600 flex-shrink-0" />
                     )}
                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                      viatura.tipo === "VEICULO"
+                      equipamento.tipo === "VEICULO"
                         ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                         : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
                     }`}>
-                      {viatura.tipo === "VEICULO" ? t("equipment.type.vehicle") : t("equipment.type.machine")}
+                      {equipamento.tipo === "VEICULO" ? t("equipment.type.vehicle") : t("equipment.type.machine")}
                     </span>
                   </div>
                   <h3 className="font-semibold text-lg dark:text-white truncate">
-                    {viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque}
+                    {equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{viatura.marca} {viatura.modelo}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{t("equipment.list.year")}: {viatura.ano}</p>
-                  {viatura.tipo === "VEICULO" ? (
+                  <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{equipamento.marca} {equipamento.modelo}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{t("equipment.list.year")}: {equipamento.ano}</p>
+                  {equipamento.tipo === "VEICULO" ? (
                     <p className="text-xs text-gray-500 dark:text-gray-400">{t("equipment.details.license")}</p>
                   ) : (
                     <p className="text-xs text-gray-500 dark:text-gray-400">{t("equipment.details.park")}</p>
@@ -612,7 +601,7 @@ export default function ViaturasPage() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Link href={`/module-equipament/admin/equipment/${viatura.id}`} className="flex-1">
+                <Link href={`/module-equipament/admin/equipment/${equipamento.id}`} className="flex-1">
                   <Button
                     variant="outline"
                     size="sm"
@@ -627,16 +616,16 @@ export default function ViaturasPage() {
                   size="sm"
                   className="flex-1"
                   onClick={() => {
-                    setDeleteTarget(viatura)
+                    setDeleteTarget(equipamento)
                     setDeleteDialogOpen(true)
                   }}
                 >
                   <Trash2 className="h-4 w-4 mr-1" />
                   {t("common.delete")}
                 </Button>
-                      {viatura.qrCode && (viatura.matricula || viatura.parque) && (
+                      {equipamento.qrCode && (equipamento.matricula || equipamento.parque) && (
                         <>
-                          <Link href={`/equipament-view/${viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque}`} target="_blank" className="flex-1">
+                          <Link href={`/equipament-view/${equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque}`} target="_blank" className="flex-1">
                             <Button variant="outline" size="sm" className="w-full">
                               <QrCode className="h-4 w-4 mr-1" />
                               QR
@@ -646,7 +635,7 @@ export default function ViaturasPage() {
                       variant="outline"
                       size="sm"
                       className="flex-1"
-                      onClick={() => handleDownloadQRCodePDF(viatura)}
+                      onClick={() => handleDownloadQRCodePDF(equipamento)}
                     >
                       <Download className="h-4 w-4 mr-1" />
                       PDF
@@ -659,7 +648,7 @@ export default function ViaturasPage() {
         )}
       </div>
 
-      {/* Desktop Table View */}
+      {}
       <div className="hidden sm:block bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
         <Table>
           <TableHeader>
@@ -674,37 +663,37 @@ export default function ViaturasPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredViaturas.length === 0 ? (
+            {filteredEquipamentos.length === 0 ? (
               <TableRow className="dark:border-gray-700">
                 <TableCell colSpan={7} className="text-center dark:text-gray-400">
-                  {Array.isArray(viaturas) && viaturas.length === 0 ? t("vehicles.noVehicles") : t("common.noResults")}
+                  {Array.isArray(equipamentos) && equipamentos.length === 0 ? t("vehicles.noVehicles") : t("common.noResults")}
                 </TableCell>
               </TableRow>
             ) : (
-              filteredViaturas.map((viatura) => (
-                <TableRow key={viatura.id} className="dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              filteredEquipamentos.map((equipamento) => (
+                <TableRow key={equipamento.id} className="dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      {viatura.tipo === "VEICULO" ? (
+                      {equipamento.tipo === "VEICULO" ? (
                         <Car className="h-4 w-4 text-blue-600" />
                       ) : (
                         <Wrench className="h-4 w-4 text-orange-600" />
                       )}
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        viatura.tipo === "VEICULO"
+                        equipamento.tipo === "VEICULO"
                           ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                           : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
                       }`}>
-                        {viatura.tipo === "VEICULO" ? t("equipment.type.vehicle") : t("equipment.type.machine")}
+                        {equipamento.tipo === "VEICULO" ? t("equipment.type.vehicle") : t("equipment.type.machine")}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    {viatura.foto ? (
+                    {equipamento.foto ? (
                       <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                         <img
-                          src={viatura.foto}
-                          alt={viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque}
+                          src={equipamento.foto}
+                          alt={equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -717,21 +706,21 @@ export default function ViaturasPage() {
                   <TableCell className="dark:text-gray-300">
                     <div>
                       <div className="font-semibold">
-                        {viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque}
+                        {equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque}
                       </div>
-                      {viatura.tipo === "VEICULO" ? (
+                      {equipamento.tipo === "VEICULO" ? (
                         <div className="text-xs text-gray-500 dark:text-gray-400">{t("equipment.details.license")}</div>
                       ) : (
                         <div className="text-xs text-gray-500 dark:text-gray-400">{t("equipment.details.park")}</div>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="dark:text-gray-300 font-medium">{viatura.marca}</TableCell>
-                  <TableCell className="dark:text-gray-300">{viatura.modelo}</TableCell>
-                  <TableCell className="dark:text-gray-300">{viatura.ano}</TableCell>
+                  <TableCell className="dark:text-gray-300 font-medium">{equipamento.marca}</TableCell>
+                  <TableCell className="dark:text-gray-300">{equipamento.modelo}</TableCell>
+                  <TableCell className="dark:text-gray-300">{equipamento.ano}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Link href={`/module-equipament/admin/equipment/${viatura.id}`}>
+                      <Link href={`/module-equipament/admin/equipment/${equipamento.id}`}>
                         <Button
                           variant="outline"
                           size="icon"
@@ -743,15 +732,15 @@ export default function ViaturasPage() {
                         variant="outline"
                         size="icon"
                         onClick={() => {
-                          setDeleteTarget(viatura)
+                          setDeleteTarget(equipamento)
                           setDeleteDialogOpen(true)
                         }}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                      {viatura.qrCode && (viatura.matricula || viatura.parque) && (
+                      {equipamento.qrCode && (equipamento.matricula || equipamento.parque) && (
                         <>
-                          <Link href={`/equipament-view/${viatura.tipo === "VEICULO" ? viatura.matricula : viatura.parque}`} target="_blank">
+                          <Link href={`/equipament-view/${equipamento.tipo === "VEICULO" ? equipamento.matricula : equipamento.parque}`} target="_blank">
                             <Button variant="outline" size="icon" title={t("equipment.list.view") + " QR Code"}>
                               <QrCode className="h-4 w-4" />
                             </Button>
@@ -759,7 +748,7 @@ export default function ViaturasPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => handleDownloadQRCodePDF(viatura)}
+                            onClick={() => handleDownloadQRCodePDF(equipamento)}
                             title={t("equipment.list.downloadQR")}
                           >
                             <Download className="h-4 w-4" />
