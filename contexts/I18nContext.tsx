@@ -17,7 +17,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Load from localStorage
     const saved = localStorage.getItem("locale") as Locale
-    if (saved && ["pt", "en", "es", "fr"].includes(saved)) {
+    if (saved && ["pt", "en", "fr"].includes(saved)) {
       setLocaleState(saved)
     }
   }, [])

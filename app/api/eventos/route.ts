@@ -10,17 +10,30 @@ export async function GET(request: NextRequest) {
 
     const eventos = await prisma.evento.findMany({
       where: viaturaId ? { viaturaId } : undefined,
-      include: {
+      select: {
+        id: true,
+        viaturaId: true,
+        titulo: true,
+        descricao: true,
+        tipo: true,
+        data: true,
+        custo: true,
+        publico: true,
+        createdAt: true,
+        updatedAt: true,
         viatura: {
           select: {
             matricula: true,
+            parque: true,
             modelo: true,
+            tipo: true,
           },
         },
       },
       orderBy: {
         data: "desc",
       },
+      take: 500, // Limitar resultados
     })
 
     return NextResponse.json(eventos)
@@ -40,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { viaturaId, titulo, descricao, tipo, data, custo } = body
+    const { viaturaId, titulo, descricao, tipo, data, custo, publico } = body
 
     const evento = await prisma.evento.create({
       data: {
@@ -50,6 +63,7 @@ export async function POST(request: NextRequest) {
         tipo,
         data: new Date(data),
         custo: custo ? parseFloat(custo) : null,
+        publico: publico !== undefined ? publico : false,
       },
     })
 

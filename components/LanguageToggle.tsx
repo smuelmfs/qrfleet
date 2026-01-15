@@ -13,7 +13,6 @@ import { Globe, Check } from "lucide-react"
 const languages = [
   { code: "pt" as const, name: "Português", flag: "🇵🇹", short: "PT" },
   { code: "en" as const, name: "English", flag: "🇬🇧", short: "EN" },
-  { code: "es" as const, name: "Español", flag: "🇪🇸", short: "ES" },
   { code: "fr" as const, name: "Français", flag: "🇫🇷", short: "FR" },
 ]
 

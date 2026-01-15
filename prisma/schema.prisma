@@ -50,6 +50,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  auditoria     Auditoria[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -66,16 +67,25 @@ model VerificationToken {
 }
 
 model Viatura {
-  id          String      @id @default(cuid())
-  matricula   String      @unique
+  id          String           @id @default(cuid())
+  tipo        EquipamentoTipo  @default(VEICULO)
+  matricula   String?          @unique
+  parque      String?
+  peso        String?          // Peso em toneladas (ex: 1T, 1T5, 2T5) - apenas para máquinas
   modelo      String
   marca       String
   ano         Int
   foto        String?
-  descricao   String?     @db.Text
-  qrCode      String?     @db.LongText
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  descricao   String?          @db.Text
+  qrCode      String?          @db.LongText
+  // Campos de visibilidade pública
+  publicoFoto        Boolean  @default(false)
+  publicoDescricao   Boolean  @default(false)
+  publicoMarca       Boolean  @default(true)
+  publicoModelo      Boolean  @default(true)
+  publicoAno         Boolean  @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   documentos  Documento[]
   eventos     Evento[]
 
@@ -90,10 +100,14 @@ model Documento {
   arquivo     String
   tipo        String
   dataVencimento DateTime?
+  publico     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   viatura     Viatura  @relation(fields: [viaturaId], references: [id], onDelete: Cascade)
 
+  @@index([viaturaId])
+  @@index([publico])
+  @@index([createdAt])
   @@map("documentos")
 }
 
@@ -105,16 +119,25 @@ model Evento {
   tipo        EventoTipo
   data        DateTime
   custo       Float?
+  publico     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   viatura     Viatura  @relation(fields: [viaturaId], references: [id], onDelete: Cascade)
 
+  @@index([viaturaId])
+  @@index([publico])
+  @@index([data])
   @@map("eventos")
 }
 
 enum UserRole {
   ADMIN
   EDITOR
+}
+
+enum EquipamentoTipo {
+  VEICULO
+  MAQUINA
 }
 
 enum EventoTipo {
@@ -125,5 +148,23 @@ enum EventoTipo {
   PECAS_TROCADAS
   REVISAO
   OUTRO
+}
+
+model Auditoria {
+  id          String   @id @default(cuid())
+  userId      String
+  acao        String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, etc.
+  entidade    String   // VIATURA, DOCUMENTO, EVENTO, USUARIO, etc.
+  entidadeId  String?  // ID da entidade afetada
+  detalhes    String?  @db.Text // Detalhes adicionais da ação
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([entidade])
+  @@map("auditoria")
 }
 

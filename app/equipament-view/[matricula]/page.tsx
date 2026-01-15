@@ -31,10 +31,13 @@ interface Evento {
 
 interface Viatura {
   id: string
-  matricula: string
-  modelo: string
-  marca: string
-  ano: number
+  tipo: string
+  matricula?: string
+  parque?: string
+  peso?: string
+  modelo?: string
+  marca?: string
+  ano?: number
   foto?: string
   descricao?: string
   documentos: Documento[]
@@ -137,7 +140,15 @@ export default function ViaturaPublicPage({
           <div className="p-6">
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-3xl font-bold dark:text-white">
-                {viatura.marca} {viatura.modelo}
+                {viatura.marca && viatura.modelo 
+                  ? `${viatura.marca} ${viatura.modelo}`
+                  : viatura.marca 
+                  ? viatura.marca
+                  : viatura.modelo
+                  ? viatura.modelo
+                  : viatura.tipo === "VEICULO" 
+                  ? `Veículo ${viatura.matricula || ""}`
+                  : `Máquina ${viatura.parque || ""}`}
               </h1>
               {viatura.foto && (
                 <Button
@@ -156,11 +167,20 @@ export default function ViaturaPublicPage({
               )}
             </div>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
-              {t("public.license")}: {viatura.matricula}
+              {viatura.tipo === "VEICULO" 
+                ? `${t("public.license")}: ${viatura.matricula || "N/A"}`
+                : `Parque: ${viatura.parque || "N/A"}`}
             </p>
-            <p className="text-gray-500 dark:text-gray-400 mb-2">
-              {t("public.year")}: {viatura.ano}
-            </p>
+            {viatura.tipo === "MAQUINA" && viatura.peso && (
+              <p className="text-gray-500 dark:text-gray-400 mb-2">
+                Peso: {viatura.peso}
+              </p>
+            )}
+            {viatura.ano && (
+              <p className="text-gray-500 dark:text-gray-400 mb-2">
+                {t("public.year")}: {viatura.ano}
+              </p>
+            )}
             {viatura.descricao && (
               <p className="text-gray-700 dark:text-gray-300 mt-4">{viatura.descricao}</p>
             )}
@@ -169,7 +189,9 @@ export default function ViaturaPublicPage({
             <div className="relative w-full h-64 md:h-96 border-t dark:border-gray-700">
               <Image
                 src={viatura.foto}
-                alt={`${viatura.marca} ${viatura.modelo}`}
+                alt={viatura.marca && viatura.modelo 
+                  ? `${viatura.marca} ${viatura.modelo}`
+                  : "Equipamento"}
                 fill
                 className="object-cover"
               />

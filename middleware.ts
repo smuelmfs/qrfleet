@@ -6,7 +6,10 @@ export default withAuth({
   },
   callbacks: {
     authorized: ({ token, req }) => {
-      if (req.nextUrl.pathname.startsWith("/admin")) {
+      const path = req.nextUrl.pathname
+      // Proteger rotas de módulos e admin
+      if (path.startsWith("/modules") || 
+          path.startsWith("/module-equipament/admin")) {
         // Verificar se há token e se tem um id válido
         return !!(token && (token as any).id)
       }
@@ -16,6 +19,6 @@ export default withAuth({
 })
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/modules/:path*", "/module-equipament/admin/:path*"],
 }
 

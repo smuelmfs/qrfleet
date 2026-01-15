@@ -42,7 +42,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { titulo, descricao, tipo, data, custo } = body
+    const { titulo, descricao, tipo, data, custo, publico } = body
 
     const evento = await prisma.evento.update({
       where: { id: params.id },
@@ -52,6 +52,7 @@ export async function PUT(
         tipo,
         data: new Date(data),
         custo: custo ? parseFloat(custo) : null,
+        publico: publico !== undefined ? publico : false,
       },
     })
 

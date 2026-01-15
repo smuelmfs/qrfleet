@@ -6,10 +6,29 @@ import { generateQRCode } from "@/lib/qrcode"
 
 export async function GET() {
   try {
+    // Buscar apenas campos necessários para listagem (sem documentos e eventos)
     const viaturas = await prisma.viatura.findMany({
-      include: {
-        documentos: true,
-        eventos: true,
+      select: {
+        id: true,
+        tipo: true,
+        matricula: true,
+        parque: true,
+        peso: true,
+        modelo: true,
+        marca: true,
+        ano: true,
+        foto: true,
+        descricao: true,
+        qrCode: true,
+        createdAt: true,
+        updatedAt: true,
+        // Contar documentos e eventos ao invés de buscar todos
+        _count: {
+          select: {
+            documentos: true,
+            eventos: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -32,29 +51,66 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { matricula, modelo, marca, ano, foto, descricao } = body
+    const { tipo, matricula, parque, peso, modelo, marca, ano, foto, descricao } = body
 
-    // Verificar se a matrícula já existe
-    const existing = await prisma.viatura.findUnique({
-      where: { matricula },
-    })
-
-    if (existing) {
+    // Validar tipo
+    if (tipo === "VEICULO" && !matricula) {
       return NextResponse.json(
-        { error: "Matrícula já existe" },
+        { error: "Matrícula é obrigatória para veículos" },
         { status: 400 }
       )
     }
 
-    // Gerar URL pública da viatura (fixo para domínio atual)
-    const publicUrl = `http://localhost:3000/viatura/${matricula}`
-    
-    // Gerar QR Code
-    const qrCodeDataUrl = await generateQRCode(publicUrl)
+    if (tipo === "MAQUINA" && !parque) {
+      return NextResponse.json(
+        { error: "Parque é obrigatório para máquinas" },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se a matrícula ou parque já existe
+    if (tipo === "VEICULO" && matricula) {
+      const existing = await prisma.viatura.findUnique({
+        where: { matricula },
+      })
+
+      if (existing) {
+        return NextResponse.json(
+          { error: "Matrícula já existe" },
+          { status: 400 }
+        )
+      }
+    }
+
+    if (tipo === "MAQUINA" && parque) {
+      const existing = await prisma.viatura.findFirst({
+        where: { parque },
+      })
+
+      if (existing) {
+        return NextResponse.json(
+          { error: "Parque já existe" },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Gerar QR Code para veículos e máquinas
+    let qrCodeDataUrl: string | null = null
+    if (tipo === "VEICULO" && matricula) {
+      const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${matricula}`
+      qrCodeDataUrl = await generateQRCode(publicUrl)
+    } else if (tipo === "MAQUINA" && parque) {
+      const publicUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/equipament-view/${parque}`
+      qrCodeDataUrl = await generateQRCode(publicUrl)
+    }
 
     const viatura = await prisma.viatura.create({
       data: {
-        matricula,
+        tipo: tipo || "VEICULO",
+        matricula: tipo === "VEICULO" ? matricula : null,
+        parque: tipo === "MAQUINA" ? parque : null,
+        peso: tipo === "MAQUINA" ? peso || null : null,
         modelo,
         marca,
         ano: parseInt(ano),

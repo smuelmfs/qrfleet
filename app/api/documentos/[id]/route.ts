@@ -42,7 +42,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { titulo, descricao, arquivo, tipo, dataVencimento } = body
+    const { titulo, descricao, arquivo, tipo, dataVencimento, publico } = body
 
     const documento = await prisma.documento.update({
       where: { id: params.id },
@@ -52,6 +52,7 @@ export async function PUT(
         arquivo,
         tipo,
         dataVencimento: dataVencimento ? new Date(dataVencimento) : null,
+        publico: publico !== undefined ? publico : false,
       },
     })
 

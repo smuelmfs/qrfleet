@@ -10,17 +10,30 @@ export async function GET(request: NextRequest) {
 
     const documentos = await prisma.documento.findMany({
       where: viaturaId ? { viaturaId } : undefined,
-      include: {
+      select: {
+        id: true,
+        viaturaId: true,
+        titulo: true,
+        descricao: true,
+        arquivo: true,
+        tipo: true,
+        dataVencimento: true,
+        publico: true,
+        createdAt: true,
+        updatedAt: true,
         viatura: {
           select: {
             matricula: true,
+            parque: true,
             modelo: true,
+            tipo: true,
           },
         },
       },
       orderBy: {
         createdAt: "desc",
       },
+      take: 500, // Limitar resultados
     })
 
     return NextResponse.json(documentos)
@@ -40,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { viaturaId, titulo, descricao, arquivo, tipo, dataVencimento } = body
+    const { viaturaId, titulo, descricao, arquivo, tipo, dataVencimento, publico } = body
 
     const documento = await prisma.documento.create({
       data: {
@@ -50,6 +63,7 @@ export async function POST(request: NextRequest) {
         arquivo,
         tipo,
         dataVencimento: dataVencimento ? new Date(dataVencimento) : null,
+        publico: publico !== undefined ? publico : false,
       },
     })
 

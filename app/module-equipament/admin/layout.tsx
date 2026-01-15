@@ -39,42 +39,53 @@ export default function AdminLayout({
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <Link href="/admin" className="text-xl font-bold dark:text-white">
+                <Link href="/modules" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mr-2">
+                  {t("nav.backToModules")}
+                </Link>
+                <Link href="/module-equipament/admin" className="text-xl font-bold dark:text-white">
                   QRFleet
                 </Link>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
-                  href="/admin/viaturas"
+                  href="/module-equipament/admin/equipment"
                   className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   {t("nav.vehicles")}
                 </Link>
                 <Link
-                  href="/admin/documentos"
+                  href="/module-equipament/admin/documents"
                   className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   {t("nav.documents")}
                 </Link>
                 <Link
-                  href="/admin/eventos"
+                  href="/module-equipament/admin/events"
                   className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   {t("nav.events")}
                 </Link>
                 <Link
-                  href="/admin/perfil"
+                  href="/module-equipament/admin/profile"
                   className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   {t("nav.profile")}
                 </Link>
                 {user.role === "ADMIN" && (
-                  <Link
-                    href="/admin/utilizadores"
-                    className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                  >
-                    {t("nav.users")}
-                  </Link>
+                  <>
+                    <Link
+                      href="/module-equipament/admin/users"
+                      className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                    >
+                      {t("nav.users")}
+                    </Link>
+                    <Link
+                      href="/module-equipament/admin/audit"
+                      className="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                    >
+                      {t("nav.audit")}
+                    </Link>
+                  </>
                 )}
               </div>
             </div>
@@ -118,41 +129,50 @@ export default function AdminLayout({
             <div className="fixed top-16 left-0 right-0 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-lg z-50 sm:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
               <div className="px-4 py-4 space-y-1">
                 <Link
-                  href="/admin/viaturas"
+                  href="/module-equipament/admin/equipment"
                   className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t("nav.vehicles")}
                 </Link>
                 <Link
-                  href="/admin/documentos"
+                  href="/module-equipament/admin/documents"
                   className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t("nav.documents")}
                 </Link>
                 <Link
-                  href="/admin/eventos"
+                  href="/module-equipament/admin/events"
                   className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t("nav.events")}
                 </Link>
                 <Link
-                  href="/admin/perfil"
+                  href="/module-equipament/admin/profile"
                   className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t("nav.profile")}
                 </Link>
                 {user.role === "ADMIN" && (
-                  <Link
-                    href="/admin/utilizadores"
-                    className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {t("nav.users")}
-                  </Link>
+                  <>
+                    <Link
+                      href="/module-equipament/admin/users"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {t("nav.users")}
+                    </Link>
+                    <Link
+                      href="/module-equipament/admin/audit"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {t("nav.audit")}
+                    </Link>
+                  </>
                 )}
                 
                 {/* Separator */}

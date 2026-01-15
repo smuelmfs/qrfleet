@@ -48,14 +48,14 @@ export default function LoginPage() {
         if (session) {
           // Forçar reload completo da página para garantir que a sessão seja lida corretamente
           // Isso resolve o problema de a sessão não estar disponível imediatamente após o login
-          window.location.href = "/admin"
+          window.location.href = "/modules"
         } else {
           // Se ainda não houver sessão, tentar novamente após um pequeno delay
           await new Promise(resolve => setTimeout(resolve, 300))
           const retrySession = await getSession()
           
           if (retrySession) {
-            window.location.href = "/admin"
+            window.location.href = "/modules"
           } else {
             toast({
               title: "Erro",
